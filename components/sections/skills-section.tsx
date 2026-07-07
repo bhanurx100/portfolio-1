@@ -1,228 +1,195 @@
 'use client'
 
-import {
-  Database,
-  Layers,
-  MonitorSmartphone,
-  Server,
-  Wrench,
-} from 'lucide-react'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
 
-const skillGroups = [
+type CapabilityId = 'craft' | 'orchestrate' | 'engineer' | 'model' | 'ship'
+
+type Capability = {
+  id: CapabilityId
+  title: string
+  tagline: string
+  tech: string[]
+  x: number // percentage position, desktop constellation only
+  y: number
+  dominant?: boolean
+}
+
+const capabilities: Capability[] = [
   {
-    icon: MonitorSmartphone,
-    group: 'Frontend Engineering',
-    description: 'Core interface development',
-    accent: 'violet',
-    items: [
-      'React',
-      'Next.js',
-      'TypeScript',
-      'JavaScript',
-      'Tailwind CSS',
-      'HTML',
-      'CSS',
-    ],
+    id: 'craft',
+    title: 'CRAFT',
+    tagline: 'Interfaces & interaction',
+    tech: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'],
+    x: 50,
+    y: 12,
+    dominant: true,
   },
   {
-    icon: Layers,
-    group: 'State & Data',
-    description: 'Application state management',
-    accent: 'cyan',
-    items: ['TanStack Query', 'Redux Toolkit', 'Zustand', 'Context API'],
+    id: 'orchestrate',
+    title: 'ORCHESTRATE',
+    tagline: 'State & server data',
+    tech: ['TanStack Query', 'Redux Toolkit', 'Zustand'],
+    x: 28,
+    y: 38,
   },
   {
-    icon: Server,
-    group: 'Backend Systems',
-    description: 'Server-side logic & APIs',
-    accent: 'blue-violet',
-    items: ['Node.js', 'Express.js', 'REST APIs', 'JWT'],
+    id: 'engineer',
+    title: 'ENGINEER',
+    tagline: 'APIs & application logic',
+    tech: ['Node.js', 'Express.js', 'REST APIs'],
+    x: 72,
+    y: 38,
   },
   {
-    icon: Database,
-    group: 'Data Layer',
-    description: 'Databases & ORMs',
-    accent: 'teal',
-    items: ['PostgreSQL', 'MongoDB', 'Prisma'],
+    id: 'model',
+    title: 'MODEL',
+    tagline: 'Persistent data systems',
+    tech: ['PostgreSQL', 'MongoDB', 'Prisma'],
+    x: 50,
+    y: 64,
   },
   {
-    icon: Wrench,
-    group: 'Build & Delivery',
-    description: 'Development & deployment',
-    accent: 'amber',
-    items: ['Git', 'GitHub', 'Postman', 'Vercel', 'Docker'],
+    id: 'ship',
+    title: 'SHIP',
+    tagline: 'Delivery & iteration',
+    tech: ['Git', 'GitHub', 'Vercel', 'Docker'],
+    x: 50,
+    y: 88,
   },
 ]
 
-const accentStyles = {
-  violet: {
-    bg: 'bg-violet-500/10',
-    text: 'text-violet-400',
-    border: 'border-violet-500/20',
-    chipBg: 'bg-violet-500/5',
-    chipText: 'text-violet-300',
-  },
-  cyan: {
-    bg: 'bg-cyan-500/10',
-    text: 'text-cyan-400',
-    border: 'border-cyan-500/20',
-    chipBg: 'bg-cyan-500/5',
-    chipText: 'text-cyan-300',
-  },
-  'blue-violet': {
-    bg: 'bg-indigo-500/10',
-    text: 'text-indigo-400',
-    border: 'border-indigo-500/20',
-    chipBg: 'bg-indigo-500/5',
-    chipText: 'text-indigo-300',
-  },
-  teal: {
-    bg: 'bg-teal-500/10',
-    text: 'text-teal-400',
-    border: 'border-teal-500/20',
-    chipBg: 'bg-teal-500/5',
-    chipText: 'text-teal-300',
-  },
-  amber: {
-    bg: 'bg-amber-500/10',
-    text: 'text-amber-400',
-    border: 'border-amber-500/20',
-    chipBg: 'bg-amber-500/5',
-    chipText: 'text-amber-300',
-  },
-}
+const edges: [CapabilityId, CapabilityId][] = [
+  ['craft', 'orchestrate'],
+  ['craft', 'engineer'],
+  ['orchestrate', 'model'],
+  ['engineer', 'model'],
+  ['model', 'ship'],
+]
+
+const byId = Object.fromEntries(capabilities.map((c) => [c.id, c])) as Record<
+  CapabilityId,
+  Capability
+>
 
 export function SkillsSection() {
+  const [activeId, setActiveId] = useState<CapabilityId | null>(null)
+
+  const isEdgeActive = (a: CapabilityId, b: CapabilityId) =>
+    activeId !== null && (activeId === a || activeId === b)
+
+  const isNodeQuiet = (id: CapabilityId) => activeId !== null && activeId !== id
+
   return (
     <section
       id="skills"
-      className="scroll-section mx-auto flex max-w-7xl flex-col gap-8 px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
+      className="scroll-section mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
     >
       <div className="flex flex-col gap-3">
         <p className="eyebrow">CAPABILITIES</p>
         <h2 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">
-          Tools I use to <span className="text-primary">build real products</span>.
+          What I do <span className="text-primary">→</span> how I build it.
         </h2>
         <p className="text-muted-foreground max-w-md leading-relaxed text-pretty">
-          A practical stack across interface, state, systems and delivery.
+          From interface decisions to production systems.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12 lg:gap-6">
-        {/* Frontend - spans 5 columns, dominant */}
-        <section className="surface-card col-span-1 flex flex-col gap-4 p-6 md:col-span-2 lg:col-span-5">
-          <div className="flex items-center gap-3">
-            <span className={`${accentStyles.violet.bg} ${accentStyles.violet.text} inline-flex size-10 items-center justify-center rounded-lg`}>
-              <MonitorSmartphone className="size-5" aria-hidden="true" />
-            </span>
-            <div className="flex flex-col">
-              <h3 className="font-semibold">Frontend Engineering</h3>
-              <p className="text-muted-foreground text-xs">Core interface development</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {skillGroups[0].items.map((item) => (
-              <span
-                key={item}
-                className={`${accentStyles.violet.chipBg} ${accentStyles.violet.chipText} ${accentStyles.violet.border} border px-2.5 py-1 text-xs font-medium rounded-md`}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </section>
+      {/* Desktop: capability constellation */}
+      <div
+        className="surface-card relative hidden overflow-hidden lg:block"
+        style={{ height: '28rem' }}
+        onMouseLeave={() => setActiveId(null)}
+      >
+        <svg
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          {edges.map(([a, b]) => {
+            const from = byId[a]
+            const to = byId[b]
+            const active = isEdgeActive(a, b)
+            return (
+              <line
+                key={`${a}-${b}`}
+                x1={from.x}
+                y1={from.y}
+                x2={to.x}
+                y2={to.y}
+                stroke={
+                  active ? 'rgba(168,85,247,0.85)' : 'rgba(139,92,246,0.22)'
+                }
+                strokeWidth={active ? 0.35 : 0.18}
+                style={{ transition: 'stroke 0.25s ease, stroke-width 0.25s ease' }}
+              />
+            )
+          })}
+        </svg>
 
-        {/* State & Data - spans 4 columns */}
-        <section className="surface-card col-span-1 flex flex-col gap-4 p-6 md:col-span-1 lg:col-span-4">
-          <div className="flex items-center gap-3">
-            <span className={`${accentStyles.cyan.bg} ${accentStyles.cyan.text} inline-flex size-10 items-center justify-center rounded-lg`}>
-              <Layers className="size-5" aria-hidden="true" />
+        {capabilities.map((cap) => (
+          <button
+            key={cap.id}
+            type="button"
+            onMouseEnter={() => setActiveId(cap.id)}
+            onFocus={() => setActiveId(cap.id)}
+            onBlur={() => setActiveId(null)}
+            className={cn(
+              'absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-xl px-4 py-3 text-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+              isNodeQuiet(cap.id) ? 'opacity-50' : 'opacity-100',
+            )}
+            style={{ left: `${cap.x}%`, top: `${cap.y}%` }}
+          >
+            <span
+              className={cn(
+                'inline-flex items-center justify-center rounded-full border font-semibold transition-colors',
+                cap.dominant
+                  ? 'size-4 border-primary bg-primary shadow-[0_0_16px_rgba(139,92,246,0.7)]'
+                  : 'size-3 border-primary/50 bg-primary/40',
+              )}
+              aria-hidden="true"
+            />
+            <span
+              className={cn(
+                'font-semibold tracking-tight',
+                cap.dominant ? 'text-base' : 'text-sm',
+              )}
+            >
+              {cap.title}
             </span>
-            <div className="flex flex-col">
-              <h3 className="font-semibold">State & Data</h3>
-              <p className="text-muted-foreground text-xs">Application state management</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {skillGroups[1].items.map((item) => (
-              <span
-                key={item}
-                className={`${accentStyles.cyan.chipBg} ${accentStyles.cyan.chipText} ${accentStyles.cyan.border} border px-2.5 py-1 text-xs font-medium rounded-md`}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </section>
+            <span className="text-muted-foreground text-xs">{cap.tagline}</span>
+            <span
+              className={cn(
+                'text-muted-foreground/90 max-w-[16rem] text-[0.75rem] leading-relaxed transition-opacity font-medium',
+                activeId === cap.id ? 'opacity-100' : 'opacity-80',
+              )}
+            >
+              {cap.tech.join(' · ')}
+            </span>
+          </button>
+        ))}
+      </div>
 
-        {/* Backend Systems - spans 3 columns */}
-        <section className="surface-card col-span-1 flex flex-col gap-4 p-6 md:col-span-1 lg:col-span-3">
-          <div className="flex items-center gap-3">
-            <span className={`${accentStyles['blue-violet'].bg} ${accentStyles['blue-violet'].text} inline-flex size-10 items-center justify-center rounded-lg`}>
-              <Server className="size-5" aria-hidden="true" />
-            </span>
-            <div className="flex flex-col">
-              <h3 className="font-semibold">Backend Systems</h3>
-              <p className="text-muted-foreground text-xs">Server-side logic & APIs</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {skillGroups[2].items.map((item) => (
-              <span
-                key={item}
-                className={`${accentStyles['blue-violet'].chipBg} ${accentStyles['blue-violet'].chipText} ${accentStyles['blue-violet'].border} border px-2.5 py-1 text-xs font-medium rounded-md`}
-              >
-                {item}
+      {/* Mobile / tablet: vertical capability flow */}
+      <div className="flex flex-col lg:hidden">
+        {capabilities.map((cap, i) => (
+          <div key={cap.id} className="relative flex flex-col items-center">
+            <div className="surface-card flex w-full flex-col gap-1.5 p-5 text-center">
+              <span className="font-semibold tracking-tight">{cap.title}</span>
+              <span className="text-muted-foreground text-xs">{cap.tagline}</span>
+              <span className="text-muted-foreground/80 mt-1 text-xs leading-relaxed">
+                {cap.tech.join(' · ')}
               </span>
-            ))}
-          </div>
-        </section>
-
-        {/* Data Layer - spans 4 columns */}
-        <section className="surface-card col-span-1 flex flex-col gap-4 p-6 md:col-span-1 lg:col-span-4">
-          <div className="flex items-center gap-3">
-            <span className={`${accentStyles.teal.bg} ${accentStyles.teal.text} inline-flex size-10 items-center justify-center rounded-lg`}>
-              <Database className="size-5" aria-hidden="true" />
-            </span>
-            <div className="flex flex-col">
-              <h3 className="font-semibold">Data Layer</h3>
-              <p className="text-muted-foreground text-xs">Databases & ORMs</p>
             </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {skillGroups[3].items.map((item) => (
+            {i < capabilities.length - 1 && (
               <span
-                key={item}
-                className={`${accentStyles.teal.chipBg} ${accentStyles.teal.chipText} ${accentStyles.teal.border} border px-2.5 py-1 text-xs font-medium rounded-md`}
-              >
-                {item}
-              </span>
-            ))}
+                aria-hidden="true"
+                className="bg-primary/30 my-1.5 h-5 w-px"
+              />
+            )}
           </div>
-        </section>
-
-        {/* Build & Delivery - spans 3 columns */}
-        <section className="surface-card col-span-1 flex flex-col gap-4 p-6 md:col-span-1 lg:col-span-3">
-          <div className="flex items-center gap-3">
-            <span className={`${accentStyles.amber.bg} ${accentStyles.amber.text} inline-flex size-10 items-center justify-center rounded-lg`}>
-              <Wrench className="size-5" aria-hidden="true" />
-            </span>
-            <div className="flex flex-col">
-              <h3 className="font-semibold">Build & Delivery</h3>
-              <p className="text-muted-foreground text-xs">Development & deployment</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {skillGroups[4].items.map((item) => (
-              <span
-                key={item}
-                className={`${accentStyles.amber.chipBg} ${accentStyles.amber.chipText} ${accentStyles.amber.border} border px-2.5 py-1 text-xs font-medium rounded-md`}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </section>
+        ))}
       </div>
     </section>
   )
