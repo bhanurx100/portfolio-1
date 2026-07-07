@@ -4,13 +4,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Code2 } from 'lucide-react'
 import { projects } from '@/lib/projects-data'
+import { siteConfig } from '@/lib/site-config'
 import { FeatureChip, StatusBadge, TechChip } from '@/components/shared/chips'
+import { GitHubCta } from '@/components/shared/github-cta'
 
 export function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="scroll-section mx-auto flex max-w-7xl flex-col gap-6 px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
+      className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-3">
@@ -77,7 +79,7 @@ export function ProjectsSection() {
               {/* Visual */}
               <div className="lg:w-[54%]">
                 <Image
-                  src={project.image || "/placeholder.svg"}
+                  src={project.image || '/placeholder.svg'}
                   alt={project.imageAlt}
                   width={1200}
                   height={800}
@@ -88,18 +90,12 @@ export function ProjectsSection() {
           </article>
         ))}
 
-        {/* GitHub CTA */}
-        <div className="flex justify-center">
-          <a
-            href="https://github.com/bhanurx100"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 group mx-auto flex max-w-[480px] items-center gap-4 rounded-xl border px-6 py-4 transition-all"
-          >
-            <Code2 className="text-primary size-5" aria-hidden="true" />
-            <span className="font-medium">View more projects on GitHub</span>
-            <ArrowRight className="text-primary size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-          </a>
+        {/* GitHub CTA — reuses the shared component + site config, no duplicate URL */}
+        <div className="mx-auto w-full max-w-md">
+          <GitHubCta
+            title="View more projects on GitHub"
+            href={siteConfig.github}
+          />
         </div>
       </div>
     </section>

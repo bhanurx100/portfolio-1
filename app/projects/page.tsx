@@ -42,7 +42,6 @@ export default function ProjectsPage() {
         {projects.map((project) => (
           <article key={project.slug} className="surface-card overflow-hidden">
             <div className="flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center">
-              {/* Text */}
               <div className="flex flex-col gap-5 lg:w-[46%]">
                 <div className="flex flex-wrap items-center gap-3">
                   <h2 className="text-2xl font-bold tracking-tight">
@@ -87,7 +86,6 @@ export default function ProjectsPage() {
                 </div>
               </div>
 
-              {/* Visual */}
               <div className="lg:w-[54%]">
                 <Image
                   src={project.image || "/placeholder.svg"}

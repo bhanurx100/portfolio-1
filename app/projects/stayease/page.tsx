@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Code2, ExternalLink } from 'lucide-react';
-import { SectionHeader } from '@/components/shared/section-header';
 import { Chips } from '@/components/shared/chips';
 import { GithubCTA } from '@/components/shared/github-cta';
 
@@ -12,21 +11,21 @@ export default function StayEasePage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b border-border/40">
-        <div className="max-w-6xl mx-auto px-6 py-8">
-          <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition inline-flex items-center gap-2 mb-8">
+        <div className="max-w-6xl mx-auto px-6 py-6">
+          <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition inline-flex items-center gap-2 mb-6">
             <ArrowLeft className="w-4 h-4" />
             Back to Projects
           </Link>
-          <div className="mb-8">
+          <div className="mb-6">
             <span className="text-sm font-medium text-accent uppercase tracking-wider">Featured Project</span>
           </div>
-          <div className="grid md:grid-cols-2 gap-12 items-start">
+          <div className="grid md:grid-cols-2 gap-10 items-start">
             <div>
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 text-pretty">
+              <h1 className="text-5xl md:text-6xl font-bold mb-5 text-pretty">
                 Stay<span className="text-accent">Ease</span>
               </h1>
-              <p className="text-lg text-muted-foreground mb-8">Discover. Book. Manage. Travel Smarter.</p>
-              <p className="text-base text-foreground/80 mb-8 leading-relaxed">
+              <p className="text-lg text-muted-foreground mb-6">Discover. Book. Manage. Travel Smarter.</p>
+              <p className="text-base text-foreground/80 mb-6 leading-relaxed">
                 StayEase is a modern hotel booking platform that combines hotel discovery, AI-assisted search, enriched hotel details from multiple providers, secure booking, and owner property management in one seamless experience.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -64,18 +63,18 @@ export default function StayEasePage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-6 py-10">
         {/* Problem & Solution */}
-        <div className="grid md:grid-cols-2 gap-12 mb-16">
+        <div className="grid md:grid-cols-2 gap-10 mb-12">
           <div>
-            <h2 className="text-3xl font-bold mb-6">The Problem</h2>
+            <h2 className="text-3xl font-bold mb-4">The Problem</h2>
             <p className="text-foreground/80 leading-relaxed">
               Modern hotel booking platforms usually focus only on searching and booking accommodations. Property owners often need tools to manage hotel listings, bookings, reviews, maps, amenities, and complete bookings. StayEase aims to bring hotel discovery, booking, enriched hotel information from multiple providers, secure booking flow with authentication and payment integration, and property management into a unified platform.
             </p>
           </div>
           <div>
-            <h2 className="text-3xl font-bold mb-6">My Role</h2>
-            <ul className="space-y-3">
+            <h2 className="text-3xl font-bold mb-4">My Role</h2>
+            <ul className="space-y-2.5">
               <li className="flex items-start gap-3">
                 <span className="text-accent">✓</span>
                 <span>Product Planning</span>
@@ -101,9 +100,9 @@ export default function StayEasePage() {
         </div>
 
         {/* Key Features */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">Key Features</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold mb-5">Key Features</h2>
+          <div className="grid md:grid-cols-3 gap-4">
             {[
               {
                 icon: '🔍',
@@ -136,9 +135,9 @@ export default function StayEasePage() {
                 description: 'Hotel owners can create, edit, and manage their hotel listings.'
               }
             ].map((feature, i) => (
-              <div key={i} className="p-5 rounded-lg bg-secondary/20 border border-border/30">
-                <div className="text-3xl mb-3">{feature.icon}</div>
-                <h3 className="font-semibold text-base mb-1.5">{feature.title}</h3>
+              <div key={i} className="p-4 rounded-lg bg-secondary/20 border border-border/30">
+                <div className="text-2xl mb-2">{feature.icon}</div>
+                <h3 className="font-semibold text-base mb-1">{feature.title}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             ))}
@@ -146,9 +145,9 @@ export default function StayEasePage() {
         </div>
 
         {/* Key Screens */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8">Key Screens</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold mb-6">Key Screens</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
               { src: '/images/stayease-home.png', label: 'Home Page' },
               { src: '/images/stayease-search.png', label: 'Search Results' },
@@ -165,7 +164,7 @@ export default function StayEasePage() {
                   height={300}
                   className="w-full h-auto"
                 />
-                <div className="p-4 text-center">
+                <div className="p-3 text-center">
                   <p className="text-sm font-medium">{screen.label}</p>
                 </div>
               </div>
@@ -174,28 +173,28 @@ export default function StayEasePage() {
         </div>
 
         {/* Tech Stack */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8">Tech Architecture</h2>
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold mb-6">Tech Architecture</h2>
+          <div className="grid md:grid-cols-3 gap-6">
             <div>
-              <h3 className="font-semibold text-lg mb-4">Frontend</h3>
+              <h3 className="font-semibold text-lg mb-3">Frontend</h3>
               <Chips skills={['React', 'TypeScript', 'Tailwind CSS']} />
             </div>
             <div>
-              <h3 className="font-semibold text-lg mb-4">Backend</h3>
+              <h3 className="font-semibold text-lg mb-3">Backend</h3>
               <Chips skills={['Node.js', 'Express', 'MongoDB']} />
             </div>
             <div>
-              <h3 className="font-semibold text-lg mb-4">External APIs</h3>
+              <h3 className="font-semibold text-lg mb-3">External APIs</h3>
               <Chips skills={['Booking.com RapidAPI', 'Google Maps', 'Tripadvisor API', 'Stripe']} />
             </div>
           </div>
         </div>
 
         {/* External Integrations */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">External Integrations</h2>
-          <div className="grid md:grid-cols-3 gap-5">
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold mb-5">External Integrations</h2>
+          <div className="grid md:grid-cols-3 gap-4">
             {[
               {
                 icon: '📦',
@@ -228,8 +227,8 @@ export default function StayEasePage() {
                 description: 'Secure user authentication and authorization.'
               }
             ].map((integration, i) => (
-              <div key={i} className="p-4 rounded-lg bg-secondary/20 border border-border/30">
-                <div className="text-2xl mb-2">{integration.icon}</div>
+              <div key={i} className="p-3.5 rounded-lg bg-secondary/20 border border-border/30">
+                <div className="text-xl mb-1.5">{integration.icon}</div>
                 <h3 className="font-semibold text-sm mb-1">{integration.title}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">{integration.description}</p>
               </div>
@@ -238,9 +237,9 @@ export default function StayEasePage() {
         </div>
 
         {/* Challenges */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8">Challenges & Solutions</h2>
-          <div className="space-y-6">
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold mb-6">Challenges & Solutions</h2>
+          <div className="space-y-4">
             {[
               {
                 title: 'Challenge: Hotel data comes from multiple providers with different data All',
@@ -255,8 +254,8 @@ export default function StayEasePage() {
                 description: 'Solution: Combined data from multiple sources (Booking.com, Google Maps, Tripadvisor) to provide a rich hotel experience for users.'
               }
             ].map((challenge, i) => (
-              <div key={i} className="p-6 rounded-lg bg-secondary/20 border border-border/30">
-                <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+              <div key={i} className="p-5 rounded-lg bg-secondary/20 border border-border/30">
+                <h3 className="font-semibold text-lg mb-1.5 flex items-center gap-2">
                   <span className="text-accent">●</span>
                   {challenge.title}
                 </h3>
