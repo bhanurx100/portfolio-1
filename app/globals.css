@@ -1,0 +1,202 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+  --background: #080910;
+  --foreground: #f7f7fa;
+  --card: #090c14;
+  --card-foreground: #f7f7fa;
+  --popover: #0b0e17;
+  --popover-foreground: #f7f7fa;
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+  --secondary: #10131f;
+  --secondary-foreground: #e5e6ee;
+  --muted: #0d101c;
+  --muted-foreground: #858897;
+  --accent: #a855f7;
+  --accent-foreground: #ffffff;
+  --destructive: #f43f5e;
+  --success: #22c55e;
+  --danger: #ec4899;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #8b5cf6;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply bg-background scroll-smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(124, 58, 237, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(76, 29, 149, 0.02) 0%, transparent 50%);
+  }
+}
+
+@layer utilities {
+  .eyebrow {
+    @apply text-primary text-xs font-semibold tracking-[0.2em] uppercase;
+  }
+  .surface-card {
+    @apply bg-card rounded-2xl border border-white/[0.07];
+  }
+  .scroll-section {
+    scroll-margin-top: 4rem;
+  }
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) rotateZ(0deg);
+  }
+  50% {
+    transform: translateY(-7px) rotateZ(0.35deg);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes particle-drift {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(var(--drift-x, 8px), var(--drift-y, -14px));
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes ambientParticleDrift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(var(--dx, 20px), var(--dy, -20px), 0);
+  }
+}
+
+@keyframes gridDrift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 40px;
+  }
+}
+
+.animate-grid-drift {
+  animation: gridDrift 42s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-grid-drift,
+  [style*="ambientParticleDrift"] {
+    animation: none !important;
+  }
+}
+
+@keyframes connector-draw {
+  from {
+    stroke-dashoffset: 240;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes section-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-float {
+  animation: hero-float 8s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3.2s ease-in-out infinite;
+}
+
+.animate-connector-draw {
+  stroke-dasharray: 240;
+  animation: connector-draw 1s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-float,
+  .animate-glow-pulse {
+    animation: none;
+  }
+  .animate-connector-draw {
+    stroke-dasharray: none;
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
