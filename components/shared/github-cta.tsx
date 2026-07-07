@@ -36,5 +36,4 @@ export function GitHubCta({
   )
 }
 
-// Alias for flexibility
 export const GithubCTA = GitHubCta

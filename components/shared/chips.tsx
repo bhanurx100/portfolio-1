@@ -1,7 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-// Restrained brand accent dots for well-known technologies
 const chipDotColors: Record<string, string> = {
   React: '#22d3ee',
   'Next.js': '#e5e6ee',
