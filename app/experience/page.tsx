@@ -57,7 +57,6 @@ export default function ExperiencePage() {
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-14 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-10 lg:flex-row">
-        {/* Left intro */}
         <div className="flex flex-col gap-6 lg:w-[32%]">
           <div className="flex flex-col gap-3">
             <p className="eyebrow">Experience</p>
@@ -103,7 +102,6 @@ export default function ExperiencePage() {
           </div>
         </div>
 
-        {/* Timeline */}
         <div className="relative flex flex-col gap-10 lg:w-[68%]">
           <div
             aria-hidden="true"
@@ -158,7 +156,6 @@ export default function ExperiencePage() {
         </div>
       </div>
 
-      {/* Bottom CTA */}
       <div className="surface-card flex flex-col items-start justify-between gap-6 p-6 sm:p-8 md:flex-row md:items-center">
         <div className="flex items-center gap-4">
           <span className="bg-primary/10 text-primary inline-flex size-12 shrink-0 items-center justify-center rounded-xl">

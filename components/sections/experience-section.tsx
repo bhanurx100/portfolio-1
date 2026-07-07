@@ -16,7 +16,7 @@ const roles = [
     title: 'Software Engineer',
     company: 'Cynosure Software Solutions',
     date: 'Dec 2023 — Present',
-    duration: '1+ year',
+    duration: '2+ year',
     current: true,
     description:
       'Working as a Software Engineer, focused on developing scalable web applications and building great user experiences.',
@@ -52,10 +52,9 @@ export function ExperienceSection() {
   return (
     <section
       id="experience"
-      className="scroll-section mx-auto flex max-w-7xl flex-col gap-6 px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
+      className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
     >
       <div className="flex flex-col gap-10 lg:flex-row">
-        {/* Left intro */}
         <div className="flex flex-col gap-6 lg:w-[32%]">
           <div className="flex flex-col gap-3">
             <p className="eyebrow">Experience</p>
@@ -71,7 +70,7 @@ export function ExperienceSection() {
           <div className="surface-card flex gap-8 p-6">
             <div className="flex flex-col gap-1">
               <Briefcase className="text-primary size-5" aria-hidden="true" />
-              <p className="text-3xl font-bold">2+</p>
+              <p className="text-3xl font-bold">3</p>
               <p className="text-muted-foreground text-sm">
                 Years of Experience
               </p>
@@ -101,7 +100,6 @@ export function ExperienceSection() {
           </div>
         </div>
 
-        {/* Timeline */}
         <div className="relative flex flex-col gap-10 lg:w-[68%]">
           <div
             aria-hidden="true"
@@ -156,7 +154,6 @@ export function ExperienceSection() {
         </div>
       </div>
 
-      {/* Bottom CTA */}
       <div className="surface-card flex flex-col items-start justify-between gap-6 p-6 sm:p-8 md:flex-row md:items-center">
         <div className="flex items-center gap-4">
           <span className="bg-primary/10 text-primary inline-flex size-12 shrink-0 items-center justify-center rounded-xl">
