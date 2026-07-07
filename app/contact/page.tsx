@@ -50,7 +50,6 @@ const methods = [
 export default function ContactPage() {
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 py-14 sm:px-6 lg:flex-row lg:px-8">
-      {/* Left */}
       <div className="flex flex-col gap-8 lg:w-[42%]">
         <div className="flex flex-col gap-3">
           <p className="eyebrow">Contact</p>
@@ -132,7 +131,6 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* Right form */}
       <div className="lg:w-[58%]">
         <ContactForm />
       </div>

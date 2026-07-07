@@ -46,9 +46,8 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="scroll-section mx-auto flex max-w-7xl flex-col gap-8 px-4 py-12 sm:px-6 lg:flex-row lg:px-8 lg:py-16"
+      className="scroll-section mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 lg:flex-row lg:px-8 lg:py-14"
     >
-      {/* Left */}
       <div className="flex flex-col gap-8 lg:w-[42%]">
         <div className="flex flex-col gap-3">
           <p className="eyebrow">Contact</p>
@@ -62,11 +61,11 @@ export function ContactSection() {
           </p>
         </div>
 
-        <ul className="flex flex-col">
-          {methods.map((method, i) => {
+        <ul className="flex flex-col gap-3">
+          {methods.map((method) => {
             const inner = (
               <>
-                <span className="border-border bg-card text-primary inline-flex size-11 shrink-0 items-center justify-center rounded-xl border">
+                <span className="border-primary/20 bg-primary/5 text-primary inline-flex size-10 shrink-0 items-center justify-center rounded-lg border transition-colors group-hover:border-primary/40 group-hover:bg-primary/10">
                   <method.icon className="size-4" aria-hidden="true" />
                 </span>
                 <span className="flex flex-1 flex-col gap-0.5">
@@ -77,60 +76,44 @@ export function ContactSection() {
                 </span>
                 {method.href && (
                   <ExternalLink
-                    className="text-primary size-4 shrink-0"
+                    className="text-primary size-4 shrink-0 transition-transform group-hover:translate-x-0.5"
                     aria-hidden="true"
                   />
                 )}
               </>
             )
             return (
-              <li
-                key={method.label}
-                className={
-                  i < methods.length - 1
-                    ? 'border-border/60 border-b py-4'
-                    : 'py-4'
-                }
-              >
+              <li key={method.label}>
                 {method.href ? (
                   <a
                     href={method.href}
                     target={method.external ? '_blank' : undefined}
                     rel={method.external ? 'noopener noreferrer' : undefined}
-                    className="group flex items-center gap-4"
+                    className="group flex items-center gap-4 rounded-lg border border-transparent px-3 py-2.5 transition-all hover:border-primary/20 hover:bg-primary/[0.03]"
                   >
                     {inner}
                   </a>
                 ) : (
-                  <div className="flex items-center gap-4">{inner}</div>
+                  <div className="flex items-center gap-4 rounded-lg px-3 py-2.5">{inner}</div>
                 )}
               </li>
             )
           })}
         </ul>
 
-        <div className="border-primary/25 bg-primary/5 flex items-center gap-4 rounded-2xl border p-6">
-          <span className="border-primary/30 bg-card text-primary inline-flex size-13 shrink-0 items-center justify-center rounded-full border">
-            <Send className="size-5" aria-hidden="true" />
+        <div className="border-primary/20 bg-primary/5 flex items-center gap-4 rounded-xl border p-5">
+          <span className="border-primary/30 bg-card text-primary inline-flex size-11 shrink-0 items-center justify-center rounded-full border">
+            <Send className="size-4" aria-hidden="true" />
           </span>
           <div className="flex flex-col gap-1">
-            <p className="font-semibold">Available for opportunities</p>
-            <p className="text-muted-foreground text-sm">
-              Full-time roles
-              <span className="text-primary mx-1.5" aria-hidden="true">
-                •
-              </span>
-              Product opportunities
-              <span className="text-primary mx-1.5" aria-hidden="true">
-                •
-              </span>
-              Collaborations
+            <p className="font-semibold text-sm">Available for opportunities</p>
+            <p className="text-muted-foreground text-xs">
+              Full-time roles · Product opportunities · Collaborations
             </p>
           </div>
         </div>
       </div>
 
-      {/* Right form */}
       <div className="lg:w-[58%]">
         <ContactForm />
       </div>

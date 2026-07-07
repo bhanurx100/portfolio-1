@@ -1,38 +1,48 @@
 'use client'
 
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { Lock, Mail, RotateCcw, Send } from 'lucide-react'
+
+const contactSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  subject: z.string().min(1, 'Subject is required'),
+  message: z.string().min(1, 'Message is required'),
+})
+
+type ContactFormData = z.infer<typeof contactSchema>
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>('idle')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactSchema),
+  })
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const form = e.currentTarget
+  async function onSubmit(data: ContactFormData) {
     setStatus('submitting')
     try {
-      // Configurable form endpoint — replace with your own backend or form service.
-      const formData = new FormData(form)
-      const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT
-      if (endpoint) {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          body: formData,
-        })
-        if (!res.ok) throw new Error('Failed to send')
-      } else {
-        // Fall back to a mailto draft so the message is never silently lost.
-        const name = formData.get('name')
-        const subject = formData.get('subject')
-        const message = formData.get('message')
-        window.location.href = `mailto:bhanupprasad.rx100@gmail.com?subject=${encodeURIComponent(
-          String(subject ?? ''),
-        )}&body=${encodeURIComponent(`From: ${name}\n\n${message}`)}`
-      }
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!res.ok) throw new Error('Failed to send')
+
       setStatus('success')
-      form.reset()
+      reset()
     } catch {
       setStatus('error')
     }
@@ -52,19 +62,21 @@ export function ContactForm() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <label htmlFor="name" className="text-sm font-medium">
             Your Name
           </label>
           <input
             id="name"
-            name="name"
+            {...register('name')}
             type="text"
-            required
             placeholder="Enter your name"
             className="border-input bg-secondary/40 placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-lg border px-4 py-3 text-sm outline-none focus-visible:ring-2"
           />
+          {errors.name && (
+            <p className="text-destructive text-xs">{errors.name.message}</p>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="email" className="text-sm font-medium">
@@ -72,12 +84,14 @@ export function ContactForm() {
           </label>
           <input
             id="email"
-            name="email"
+            {...register('email')}
             type="email"
-            required
             placeholder="Enter your email"
             className="border-input bg-secondary/40 placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-lg border px-4 py-3 text-sm outline-none focus-visible:ring-2"
           />
+          {errors.email && (
+            <p className="text-destructive text-xs">{errors.email.message}</p>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="subject" className="text-sm font-medium">
@@ -85,12 +99,14 @@ export function ContactForm() {
           </label>
           <input
             id="subject"
-            name="subject"
+            {...register('subject')}
             type="text"
-            required
             placeholder="What's this about?"
             className="border-input bg-secondary/40 placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-lg border px-4 py-3 text-sm outline-none focus-visible:ring-2"
           />
+          {errors.subject && (
+            <p className="text-destructive text-xs">{errors.subject.message}</p>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="message" className="text-sm font-medium">
@@ -98,12 +114,14 @@ export function ContactForm() {
           </label>
           <textarea
             id="message"
-            name="message"
-            required
+            {...register('message')}
             rows={5}
             placeholder="Tell me about your project or opportunity..."
             className="border-input bg-secondary/40 placeholder:text-muted-foreground focus-visible:ring-ring w-full resize-y rounded-lg border px-4 py-3 text-sm outline-none focus-visible:ring-2"
           />
+          {errors.message && (
+            <p className="text-destructive text-xs">{errors.message.message}</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -116,8 +134,11 @@ export function ContactForm() {
             {status === 'submitting' ? 'Sending...' : 'Send Message'}
           </button>
           <button
-            type="reset"
-            onClick={() => setStatus('idle')}
+            type="button"
+            onClick={() => {
+              reset()
+              setStatus('idle')
+            }}
             className="border-border hover:border-primary/40 inline-flex items-center justify-center gap-2 rounded-lg border px-8 py-3 text-sm font-semibold transition-colors"
           >
             <RotateCcw className="size-4" aria-hidden="true" />
