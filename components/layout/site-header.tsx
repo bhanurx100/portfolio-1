@@ -71,7 +71,6 @@ export function SiteHeader() {
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       setOpen(false)
     } else {
-      // Already has hash in href, let default navigation handle it
       setOpen(false)
     }
   }
