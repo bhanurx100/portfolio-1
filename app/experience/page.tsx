@@ -69,7 +69,7 @@ export default function ExperiencePage() {
             </p>
           </div>
 
-          <div className="surface-card flex gap-8 p-6">
+          <div className="flex gap-8">
             <div className="flex flex-col gap-1">
               <Briefcase className="text-primary size-5" aria-hidden="true" />
               <p className="text-3xl font-bold">2+</p>
@@ -84,7 +84,7 @@ export default function ExperiencePage() {
             </div>
           </div>
 
-          <div className="surface-card flex flex-col gap-3 p-6">
+          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <Heart className="text-primary size-4" aria-hidden="true" />
               <h2 className="font-semibold">What drives me</h2>
@@ -114,7 +114,7 @@ export default function ExperiencePage() {
                   <role.icon className="size-4" aria-hidden="true" />
                 </span>
               </div>
-              <div className="surface-card flex flex-1 flex-col gap-4 p-6 sm:p-7">
+              <div className="flex flex-1 flex-col gap-4 p-6 sm:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex flex-col gap-1">
                     <h2 className="text-xl font-bold">{role.title}</h2>
@@ -156,7 +156,7 @@ export default function ExperiencePage() {
         </div>
       </div>
 
-      <div className="surface-card flex flex-col items-start justify-between gap-6 p-6 sm:p-8 md:flex-row md:items-center">
+      <div className="flex flex-col items-start justify-between gap-6 p-6 sm:p-8 md:flex-row md:items-center">
         <div className="flex items-center gap-4">
           <span className="bg-primary/10 text-primary inline-flex size-12 shrink-0 items-center justify-center rounded-xl">
             <Rocket className="size-5" aria-hidden="true" />

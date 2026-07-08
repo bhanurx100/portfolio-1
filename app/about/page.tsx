@@ -64,9 +64,7 @@ export default function AboutPage() {
           <ul className="flex flex-col gap-4 sm:flex-row sm:gap-6 lg:flex-col">
             {values.map((v) => (
               <li key={v.title} className="flex items-start gap-3">
-                <span className="bg-primary/10 text-primary inline-flex size-9 shrink-0 items-center justify-center rounded-lg">
-                  <v.icon className="size-4" aria-hidden="true" />
-                </span>
+                <v.icon className="text-primary size-4" aria-hidden="true" />
                 <span className="flex flex-col">
                   <span className="text-sm font-semibold">{v.title}</span>
                   <span className="text-muted-foreground text-xs leading-relaxed">
@@ -93,9 +91,7 @@ export default function AboutPage() {
         <ul className="flex w-full flex-col gap-7 lg:w-[32%] lg:pt-8">
           {narrative.map((item) => (
             <li key={item.question} className="flex items-start gap-4">
-              <span className="border-primary/25 bg-card text-primary inline-flex size-11 shrink-0 items-center justify-center rounded-xl border">
-                <item.icon className="size-5" aria-hidden="true" />
-              </span>
+              <item.icon className="text-primary size-5" aria-hidden="true" />
               <span className="flex flex-col gap-1">
                 <span className="font-semibold">{item.question}</span>
                 <span className="text-muted-foreground text-sm leading-relaxed">

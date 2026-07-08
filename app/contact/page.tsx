@@ -110,7 +110,7 @@ export default function ContactPage() {
           })}
         </ul>
 
-        <div className="border-primary/25 bg-primary/5 flex items-center gap-4 rounded-2xl border p-6">
+        <div className="flex items-center gap-4 p-6">
           <span className="border-primary/30 bg-card text-primary inline-flex size-13 shrink-0 items-center justify-center rounded-full border">
             <Send className="size-5" aria-hidden="true" />
           </span>

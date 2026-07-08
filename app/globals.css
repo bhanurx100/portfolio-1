@@ -38,18 +38,15 @@
   color-scheme: dark;
 
   /*
-   * MASTER PALETTE — derived from the Hero/About artwork's shared visual
-   * language (near-black violet-black, graphite metallic, controlled violet
-   * illumination, restrained magenta, minimal functional cyan).
-   *
-   * Every other token below is either a direct alias of these, or a
-   * low-opacity derivative. Tune the artwork↔site edge match by adjusting
-   * ONLY these values — everything downstream follows automatically.
+   * MASTER PALETTE — pure black canvas for seamless artwork integration.
+   * Artwork edges dissolve naturally into continuous darkness.
    */
-  --canvas: #05060d;
-  --canvas-raised: #070716;
-  --surface-subtle: rgba(12, 10, 22, 0.55);
-  --surface-hover: rgba(18, 13, 31, 0.68);
+  --canvas: #000000;
+  --canvas-raised: #000000;
+  /* Subtle translucent surfaces for component hierarchy */
+  --surface-subtle: rgba(255, 255, 255, 0.018);
+  --surface-elevated: rgba(255, 255, 255, 0.028);
+  --surface-hover: rgba(139, 92, 246, 0.045);
   --violet-primary: #8b5cf6;
   --violet-soft: #a78bfa;
   --magenta-energy: #d946ef;
@@ -64,15 +61,19 @@
      nothing downstream needs to change. */
   --background: var(--canvas);
   --foreground: var(--text-primary);
-  --card: var(--canvas-raised);
+  /* Unified card surface - same as master canvas */
+  --card: var(--canvas);
   --card-foreground: var(--text-primary);
-  --popover: #09081a;
+  /* Unified popover surface - same as master canvas */
+  --popover: var(--canvas);
   --popover-foreground: var(--text-primary);
   --primary: var(--violet-primary);
   --primary-foreground: #ffffff;
-  --secondary: #0b091d;
+  /* Unified secondary surface - same as master canvas */
+  --secondary: var(--canvas);
   --secondary-foreground: #e5e6ee;
-  --muted: #0a0a18;
+  /* Unified muted surface - same as master canvas */
+  --muted: var(--canvas);
   --muted-foreground: var(--text-secondary);
   --accent: var(--violet-soft);
   --accent-foreground: #ffffff;
@@ -112,11 +113,165 @@
     @apply text-primary text-xs font-semibold tracking-[0.2em] uppercase;
   }
 
-  /* Legacy general-purpose card surface. Prefer the border-role utilities
-     below for new work — reach for this only where a real contained
-     surface (a form, a discrete data module) is actually warranted. */
+  /* Unified card surface - uses subtle translucent layer on master canvas */
   .surface-card {
-    @apply bg-card rounded-2xl border border-white/[0.07];
+    background-color: var(--surface-subtle);
+    border-radius: 1rem;
+    border: 1px solid var(--edge-subtle);
+  }
+
+  /*
+   * ARTWORK EDGE INTEGRATION
+   * Dissolves empty peripheral background into black canvas
+   * Preserves central content and labels at full visibility
+   */
+  .hero-artwork-wrapper {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .hero-artwork-wrapper::before,
+  .hero-artwork-wrapper::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Left edge scrim */
+  .hero-artwork-wrapper::before {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8%;
+    background: linear-gradient(to right, #000000 0%, transparent 100%);
+  }
+
+  /* Right edge scrim */
+  .hero-artwork-wrapper::after {
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 8%;
+    background: linear-gradient(to left, #000000 0%, transparent 100%);
+  }
+
+  /* Top edge scrim - separate element needed */
+  .hero-artwork-top-scrim {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 6%;
+    background: linear-gradient(to bottom, #000000 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Bottom edge scrim */
+  .hero-artwork-bottom-scrim {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 10%;
+    background: linear-gradient(to top, #000000 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .about-artwork-wrapper {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .about-artwork-wrapper::before,
+  .about-artwork-wrapper::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Left edge scrim - smaller since panels approach edge */
+  .about-artwork-wrapper::before {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5%;
+    background: linear-gradient(to right, #000000 0%, transparent 100%);
+  }
+
+  /* Right edge scrim - smaller since panels approach edge */
+  .about-artwork-wrapper::after {
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 5%;
+    background: linear-gradient(to left, #000000 0%, transparent 100%);
+  }
+
+  /* Top edge scrim - smaller since panels approach edge */
+  .about-artwork-top-scrim {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 4%;
+    background: linear-gradient(to bottom, #000000 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Bottom edge scrim - stronger fade in empty bottom zone */
+  .about-artwork-bottom-scrim {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 8%;
+    background: linear-gradient(to top, #000000 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Mobile-specific scrim adjustments - preserve more content for smaller screens */
+  @media (max-width: 768px) {
+    .hero-artwork-wrapper::before {
+      width: 6%;
+    }
+
+    .hero-artwork-wrapper::after {
+      width: 6%;
+    }
+
+    .hero-artwork-top-scrim {
+      height: 5%;
+    }
+
+    .hero-artwork-bottom-scrim {
+      height: 8%;
+    }
+
+    .about-artwork-wrapper::before {
+      width: 4%;
+    }
+
+    .about-artwork-wrapper::after {
+      width: 4%;
+    }
+
+    .about-artwork-top-scrim {
+      height: 3%;
+    }
+
+    .about-artwork-bottom-scrim {
+      height: 6%;
+    }
   }
 
   /*
