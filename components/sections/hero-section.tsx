@@ -80,16 +80,16 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="scroll-section relative mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 pb-8 pt-12 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-6 lg:px-8 lg:py-14"
+      className="scroll-section relative mx-auto flex min-h-[85vh] max-w-[1600px] flex-col items-center gap-5 px-4 pb-8 pt-12 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-6 lg:px-8 lg:py-16 xl:min-h-[800px]"
     >
       {/* Left */}
-      <div className="relative z-10 flex w-full flex-col gap-5 lg:w-[42%]">
+      <div className="relative z-10 flex w-full flex-col gap-6 lg:w-[46%]">
         <span className="border-border bg-card inline-flex w-fit items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium">
           <span className="bg-success size-2 rounded-full" aria-hidden="true" />
           Available for opportunities
         </span>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <p className="eyebrow">{"HEY, I'M"}</p>
           <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
             Bhanuprasad <span className="text-primary">L.</span>
@@ -144,8 +144,8 @@ export function HeroSection() {
       {/* Right visual — atmospheric integration zone.
           Stage width uses available viewport width without artificial caps.
           The 16:9 artwork preserves its composition at all breakpoints. */}
-      <div className="relative w-full lg:w-[58%]">
-        <div className="relative mx-auto w-full max-w-[800px]">
+      <div className="relative w-full lg:w-[54%]">
+        <div className="relative mx-auto w-full max-w-[950px]">
 
           {/* Scroll depth wrapper */}
           <div
@@ -167,18 +167,21 @@ export function HeroSection() {
               {/* Drift layer — CSS-animation-driven, kept on its own element
                   so it doesn't fight the inline transforms above */}
               <div ref={artRef} className="relative animate-hero-float-mobile lg:animate-hero-float">
-                {/* Hero artwork edge integration wrapper - dissolves empty peripheral background into black canvas */}
-                <div className="hero-artwork-wrapper relative">
-                  <div className="hero-artwork-top-scrim" />
-                  <div className="hero-artwork-bottom-scrim" />
-                  <Image
-                    src="/images/hero-process.png"
-                    alt="Layered 3D process visual with rings representing Interface, Systems, Product and Impact"
-                    width={900}
-                    height={900}
-                    priority
-                    className="h-auto w-full object-contain"
-                  />
+                {/* Subtle scale breathing animation */}
+                <div className="animate-energy-core">
+                  {/* Hero artwork edge integration wrapper - dissolves empty peripheral background into black canvas */}
+                  <div className="hero-artwork-wrapper relative">
+                    <div className="hero-artwork-top-scrim" />
+                    <div className="hero-artwork-bottom-scrim" />
+                    <Image
+                      src="/images/hero-process.png"
+                      alt="Layered 3D process visual with rings representing Interface, Systems, Product and Impact"
+                      width={900}
+                      height={900}
+                      priority
+                      className="h-auto w-full object-contain"
+                    />
+                  </div>
                 </div>
               </div>
 

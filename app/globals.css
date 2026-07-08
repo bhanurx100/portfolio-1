@@ -523,6 +523,50 @@
   }
 }
 
+/* Project image edge blending - dissolves image perimeter into black canvas */
+.project-image-wrapper {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.project-image-wrapper::before,
+.project-image-wrapper::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Left edge scrim */
+.project-image-wrapper::before {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6%;
+  background: linear-gradient(to right, #000000 0%, transparent 100%);
+}
+
+/* Right edge scrim */
+.project-image-wrapper::after {
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 6%;
+  background: linear-gradient(to left, #000000 0%, transparent 100%);
+}
+
+/* Mobile-specific scrim adjustments */
+@media (max-width: 768px) {
+  .project-image-wrapper::before {
+    width: 4%;
+  }
+
+  .project-image-wrapper::after {
+    width: 4%;
+  }
+}
+
 .no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;

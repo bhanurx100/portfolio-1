@@ -34,7 +34,7 @@ export function AboutSection() {
   return (
     <section
       id="about"
-      className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 pb-8 pt-12 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-8 lg:px-8 lg:py-14"
+      className="scroll-section mx-auto flex max-w-[1480px] flex-col gap-5 px-4 pb-8 pt-12 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-8 lg:px-8 lg:py-14"
     >
       {/* Left */}
       <div className="flex w-full flex-col gap-6 lg:w-[40%]">

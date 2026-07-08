@@ -12,7 +12,7 @@ export function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 pt-16 sm:px-6 lg:px-8 lg:pt-20"
+      className="scroll-section mx-auto flex max-w-[1480px] flex-col gap-5 px-4 pt-16 sm:px-6 lg:px-8 lg:pt-20"
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-3">
@@ -31,9 +31,9 @@ export function ProjectsSection() {
         {projects.slice(0, 2).map((project, index) => (
           <article
             key={project.slug}
-            className="relative overflow-hidden rounded-2xl border border-white/[0.035] bg-white/[0.008] p-6 sm:p-8 lg:flex-row lg:items-center lg:gap-8"
+            className="grid grid-cols-1 gap-8 lg:grid-cols-[0.45fr_0.55fr] lg:items-center"
           >
-            <div className="flex flex-col gap-5 lg:w-[46%]">
+            <div className="flex flex-col gap-5">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-primary/60 font-mono text-xs tabular-nums">
                   0{index + 1}
@@ -80,15 +80,17 @@ export function ProjectsSection() {
               </div>
             </div>
 
-            {/* Visual */}
-            <div className="lg:w-[54%]">
-              <Image
-                src={project.image || '/placeholder.svg'}
-                alt={project.imageAlt}
-                width={1200}
-                height={800}
-                className="h-auto w-full object-contain"
-              />
+            {/* Visual - with edge blending */}
+            <div className="relative">
+              <div className="project-image-wrapper relative overflow-hidden rounded-2xl">
+                <Image
+                  src={project.image || '/placeholder.svg'}
+                  alt={project.imageAlt}
+                  width={1200}
+                  height={800}
+                  className="h-auto w-full object-contain"
+                />
+              </div>
             </div>
           </article>
         ))}

@@ -392,7 +392,7 @@ export function GitHubActivitySection() {
     return (
         <section
             id="github"
-            className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
+            className="scroll-section mx-auto flex max-w-[1320px] flex-col gap-5 px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
         >
             <div className="flex flex-col gap-3">
                 <p className="eyebrow">BUILDING IN PUBLIC</p>
