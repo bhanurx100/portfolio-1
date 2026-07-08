@@ -9,12 +9,15 @@ type Particle = {
   vy: number
   size: number
   baseOpacity: number
-  hue: 'violet' | 'blue'
+  hue: 'violet' | 'cyan'
 }
 
-// Muted violet dominates; only a handful of dim cool-blue particles for depth.
+// Muted violet dominates; only a handful of dim cyan particles for
+// functional-accent depth. Blue was previously used here but isn't part of
+// the master 4-color palette (violet / magenta / pink / cyan) — cyan is the
+// approved restrained accent, so it replaces blue at a similar low share.
 const VIOLET = { r: 139, g: 92, b: 246 }
-const BLUE = { r: 96, g: 165, b: 250 }
+const CYAN = { r: 34, g: 211, b: 238 }
 
 const CONNECT_DISTANCE = 130
 const CONNECT_DISTANCE_SQ = CONNECT_DISTANCE * CONNECT_DISTANCE
@@ -49,8 +52,8 @@ export function AmbientBackground() {
       const count = Math.min(base, max)
 
       particles = Array.from({ length: count }, () => {
-        // ~90% muted violet, ~10% dim cool-blue for sparse depth accents.
-        const hue: Particle['hue'] = Math.random() < 0.1 ? 'blue' : 'violet'
+        // ~93% muted violet, ~7% dim cyan for sparse depth accents.
+        const hue: Particle['hue'] = Math.random() < 0.07 ? 'cyan' : 'violet'
         const speed = (0.02 + Math.random() * 0.05) * (0.6 + Math.random())
         const angle = Math.random() * Math.PI * 2
         return {
@@ -58,8 +61,8 @@ export function AmbientBackground() {
           y: Math.random() * height,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          size: hue === 'blue' ? 1 + Math.random() * 0.6 : 1 + Math.random() * 1.4,
-          baseOpacity: hue === 'blue' ? 0.16 + Math.random() * 0.12 : 0.22 + Math.random() * 0.18,
+          size: hue === 'cyan' ? 1 + Math.random() * 0.6 : 1 + Math.random() * 1.4,
+          baseOpacity: hue === 'cyan' ? 0.14 + Math.random() * 0.1 : 0.22 + Math.random() * 0.18,
           hue,
         }
       })
@@ -118,7 +121,7 @@ export function AmbientBackground() {
       }
 
       for (const p of particles) {
-        const c = p.hue === 'blue' ? BLUE : VIOLET
+        const c = p.hue === 'cyan' ? CYAN : VIOLET
         ctx.beginPath()
         ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${p.baseOpacity})`
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
@@ -201,6 +204,16 @@ export function AmbientBackground() {
         style={{
           background:
             'radial-gradient(circle, rgba(168,85,247,0.04) 0%, transparent 70%)',
+        }}
+      />
+      {/* A single faint magenta field, low in the viewport — the "closing
+          energy" the spec asks for near Contact, without tinting the whole
+          page. Never more than ~2-3% opacity contribution. */}
+      <div
+        className="absolute bottom-[-10%] right-1/3 h-[26rem] w-[26rem] rounded-full animate-grid-drift"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(217,70,239,0.03) 0%, transparent 70%)',
         }}
       />
 

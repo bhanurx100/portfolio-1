@@ -5,26 +5,36 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrowRight, Mail } from 'lucide-react'
 
 // Fixed, deterministic foreground particles that drift across the artwork
-// region only — sparse, dim, and mostly violet with one cool-blue accent.
+// region only — sparse, dim, and mostly violet with one magenta accent and
+// one restrained cyan accent. The last two are hidden below `sm` so mobile
+// only ever shows three, per the "2-4 particles on mobile" motion spec.
 const HERO_FIELD_PARTICLES = [
-  { x: 12, y: 18, size: 2, opacity: 0.3, color: '139,92,246', dur: 15, delay: -2 },
-  { x: 82, y: 12, size: 1, opacity: 0.22, color: '96,165,250', dur: 21, delay: -8 },
-  { x: 66, y: 78, size: 2, opacity: 0.26, color: '168,85,247', dur: 18, delay: -4 },
-  { x: 24, y: 68, size: 1, opacity: 0.2, color: '139,92,246', dur: 24, delay: -11 },
-  { x: 90, y: 55, size: 1, opacity: 0.18, color: '139,92,246', dur: 19, delay: -6 },
+  { x: 12, y: 18, size: 2, opacity: 0.3, color: '139,92,246', dur: 15, delay: -2, mobile: true },
+  { x: 66, y: 78, size: 2, opacity: 0.24, color: '217,70,239', dur: 18, delay: -4, mobile: true },
+  { x: 24, y: 68, size: 1, opacity: 0.2, color: '139,92,246', dur: 24, delay: -11, mobile: true },
+  { x: 82, y: 12, size: 1, opacity: 0.18, color: '34,211,238', dur: 21, delay: -8, mobile: false },
+  { x: 90, y: 55, size: 1, opacity: 0.16, color: '139,92,246', dur: 19, delay: -6, mobile: false },
 ]
 
 export function HeroSection() {
   const artRef = useRef<HTMLDivElement>(null)
   const [parallax, setParallax] = useState({ x: 0, y: 0 })
+  const [scrollShift, setScrollShift] = useState(0)
   const parallaxEnabledRef = useRef(false)
+  const scrollEnabledRef = useRef(false)
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches
     const isTouch = window.matchMedia('(pointer: coarse)').matches
+    const isSmallViewport = window.matchMedia('(max-width: 767px)').matches
+
+    // Pointer depth: desktop pointer devices only (Motion Layer F).
     parallaxEnabledRef.current = !prefersReducedMotion && !isTouch
+    // Scroll depth: desktop/tablet only, skipped on small viewports and
+    // reduced motion (Motion Layer G).
+    scrollEnabledRef.current = !prefersReducedMotion && !isSmallViewport
   }, [])
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
@@ -32,17 +42,45 @@ export function HeroSection() {
     const el = artRef.current
     if (!el) return
     const rect = el.getBoundingClientRect()
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 10
-    setParallax({ x: Math.max(-5, Math.min(5, x)), y: Math.max(-5, Math.min(5, y)) })
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 6
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 6
+    setParallax({ x: Math.max(-3, Math.min(3, x)), y: Math.max(-3, Math.min(3, y)) })
   }, [])
 
   const handlePointerLeave = useCallback(() => setParallax({ x: 0, y: 0 }), [])
 
+  // Motion Layer G — scroll depth. Extremely small (max ~10px), rAF-throttled,
+  // passive, and fully disabled on small viewports / reduced motion.
+  useEffect(() => {
+    const section = document.getElementById('home')
+    if (!section) return
+    let ticking = false
+
+    const update = () => {
+      ticking = false
+      if (!scrollEnabledRef.current) return
+      const rect = section.getBoundingClientRect()
+      const viewportMid = window.innerHeight / 2
+      const distance = rect.top + rect.height / 2 - viewportMid
+      const shift = Math.max(-10, Math.min(10, distance * -0.015))
+      setScrollShift(shift)
+    }
+
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(update)
+    }
+
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <section
       id="home"
-      className="scroll-section relative mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-10 sm:px-6 lg:flex-row lg:gap-6 lg:px-8 lg:py-14"
+      className="scroll-section relative mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-10 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-6 lg:px-8 lg:py-14"
     >
       {/* Left */}
       <div className="relative z-10 flex w-full flex-col gap-5 lg:w-[42%]">
@@ -103,39 +141,39 @@ export function HeroSection() {
         </p>
       </div>
 
-      {/* Right visual — atmospheric integration zone */}
+      {/* Right visual — atmospheric integration zone.
+          Stage width is responsive per breakpoint (NOT one clamp forcing a
+          580px floor) — this is what previously forced the artwork to
+          render far wider than small viewports allow. */}
       <div className="relative w-full lg:w-[58%]">
-        <div
-          className="relative mx-auto"
-          style={{ width: 'clamp(580px, 52vw, 800px)' }}
-        >
-          {/* Layer B: broad low-opacity violet haze */}
+        <div className="relative mx-auto w-[clamp(240px,82vw,360px)] max-w-full sm:w-[clamp(320px,72vw,460px)] md:w-[clamp(420px,62vw,560px)] lg:w-[clamp(580px,52vw,800px)]">
+          {/* Layer B+C: ambient violet/magenta field — "breathes" gently so
+              the system reads as powered rather than a static glow. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute"
+            className="animate-energy-core pointer-events-none absolute"
             style={{
               inset: '-18% -14% -20% -14%',
               zIndex: -3,
               background:
-                'radial-gradient(ellipse 60% 62% at 50% 46%, rgba(124,58,237,0.16) 0%, transparent 72%)',
+                'radial-gradient(ellipse 60% 62% at 50% 46%, rgba(139,92,246,0.16) 0%, transparent 72%)',
               filter: 'blur(60px)',
             }}
           />
-
-          {/* Layer C: near-black / deep navy-black bridge tone matching the artwork's internal dark background */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute"
+            className="animate-energy-core pointer-events-none absolute"
             style={{
               inset: '-12% -10% -14% -10%',
               zIndex: -2,
               background:
-                'radial-gradient(ellipse 58% 62% at 54% 48%, rgba(91,33,182,0.24) 0%, rgba(49,46,129,0.17) 34%, rgba(15,23,42,0.12) 58%, transparent 78%)',
+                'radial-gradient(ellipse 58% 62% at 54% 48%, rgba(91,33,182,0.24) 0%, rgba(217,70,239,0.05) 40%, rgba(15,23,42,0.12) 58%, transparent 78%)',
               filter: 'blur(42px)',
+              animationDelay: '-3s',
             }}
           />
 
-          {/* Layer D: sparse secondary cool-blue/cyan atmospheric glow */}
+          {/* Layer D: sparse restrained cyan accent — functional, not decorative */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute"
@@ -143,94 +181,131 @@ export function HeroSection() {
               inset: '4% 30% 46% -6%',
               zIndex: -1,
               background:
-                'radial-gradient(ellipse 55% 55% at 30% 30%, rgba(56,142,230,0.10) 0%, transparent 70%)',
+                'radial-gradient(ellipse 55% 55% at 30% 30%, rgba(34,211,238,0.06) 0%, transparent 70%)',
               filter: 'blur(36px)',
             }}
           />
 
+          {/* Scroll depth wrapper */}
           <div
-            className="relative"
-            onPointerMove={handlePointerMove}
-            onPointerLeave={handlePointerLeave}
+            style={{
+              transform: `translate3d(0, ${scrollShift}px, 0)`,
+              transition: 'transform 0.2s linear',
+            }}
           >
-            {/* Layer E: the image itself */}
+            {/* Pointer depth wrapper */}
             <div
-              ref={artRef}
-              className="animate-hero-float relative"
+              className="relative"
+              onPointerMove={handlePointerMove}
+              onPointerLeave={handlePointerLeave}
               style={{
                 transform: `translate(${parallax.x}px, ${parallax.y}px)`,
                 transition: 'transform 0.3s ease-out',
               }}
             >
-              <Image
-                src="/images/hero-process.png"
-                alt="Layered 3D process visual with rings representing Interface, Systems, Product and Impact"
-                width={900}
-                height={900}
-                priority
-                className="h-auto w-full object-contain"
-              />
-            </div>
-
-            {/* Layer F: soft edge-feather overlays for a seamless perimeter */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                zIndex: 1,
-                background: 'linear-gradient(to right, #05060d 0%, rgba(5,6,13,0.7) 10%, transparent 100%)',
-                width: '9%',
-              }}
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                zIndex: 1,
-                background: 'linear-gradient(to left, #05060d 0%, rgba(5,6,13,0.7) 10%, transparent 100%)',
-                right: 0,
-                width: '9%',
-              }}
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                zIndex: 1,
-                background: 'linear-gradient(to bottom, #05060d 0%, rgba(5,6,13,0.7) 10%, transparent 100%)',
-                height: '10%',
-              }}
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                zIndex: 1,
-                background: 'linear-gradient(to top, #05060d 0%, rgba(5,6,13,0.7) 12%, transparent 100%)',
-                bottom: 0,
-                height: '14%',
-              }}
-            />
-
-            {/* Layer G: a tiny number of foreground ambient particles crossing the image region */}
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ zIndex: 2 }}>
-              {HERO_FIELD_PARTICLES.map((p, i) => (
-                <span
-                  key={i}
-                  className="absolute rounded-full"
-                  style={{
-                    left: `${p.x}%`,
-                    top: `${p.y}%`,
-                    width: p.size,
-                    height: p.size,
-                    opacity: p.opacity,
-                    backgroundColor: `rgba(${p.color},1)`,
-                    animation: `ambientParticleDrift ${p.dur}s ease-in-out ${p.delay}s infinite alternate`,
-                    '--dx': '14px',
-                    '--dy': '-10px',
-                  } as React.CSSProperties}
+              {/* Drift layer — CSS-animation-driven, kept on its own element
+                  so it doesn't fight the inline transforms above */}
+              <div ref={artRef} className="relative animate-hero-float-mobile lg:animate-hero-float">
+                <Image
+                  src="/images/hero-process.png"
+                  alt="Layered 3D process visual with rings representing Interface, Systems, Product and Impact"
+                  width={900}
+                  height={900}
+                  priority
+                  className="h-auto w-full object-contain"
                 />
-              ))}
+              </div>
+
+              {/* Layer F: soft edge-feather overlays, tied to the canvas token */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  zIndex: 1,
+                  background: 'linear-gradient(to right, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
+                  width: '9%',
+                }}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  zIndex: 1,
+                  background: 'linear-gradient(to left, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
+                  right: 0,
+                  width: '9%',
+                }}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  zIndex: 1,
+                  background: 'linear-gradient(to bottom, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
+                  height: '10%',
+                }}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  zIndex: 1,
+                  background: 'linear-gradient(to top, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 12%, transparent 100%)',
+                  bottom: 0,
+                  height: '14%',
+                }}
+              />
+
+              {/* Motion Layer C: vertical energy transfer — a thin, mostly
+                  invisible beam that occasionally travels the central axis.
+                  Confined to the middle third so it never crosses the
+                  01/02/03/04 label zones near the edges. */}
+              <div
+                aria-hidden="true"
+                className="animate-energy-transfer pointer-events-none absolute left-1/2 top-[30%] bottom-[30%] w-px -translate-x-1/2"
+                style={{
+                  zIndex: 2,
+                  background:
+                    'linear-gradient(to bottom, transparent, rgba(139,92,246,0.5) 40%, rgba(217,70,239,0.4) 60%, transparent)',
+                }}
+              />
+
+              {/* Motion Layer E: light sweep — infrequent, low-opacity, and
+                  clipped to the artwork stage only */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 overflow-hidden"
+                style={{ zIndex: 2 }}
+              >
+                <div
+                  className="animate-light-sweep absolute top-0 h-full w-1/3"
+                  style={{
+                    background:
+                      'linear-gradient(75deg, transparent, rgba(167,139,250,0.16) 45%, transparent)',
+                  }}
+                />
+              </div>
+
+              {/* Layer G: local ambient particles */}
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ zIndex: 2 }}>
+                {HERO_FIELD_PARTICLES.map((p, i) => (
+                  <span
+                    key={i}
+                    className={p.mobile ? 'absolute rounded-full' : 'absolute hidden rounded-full sm:block'}
+                    style={{
+                      left: `${p.x}%`,
+                      top: `${p.y}%`,
+                      width: p.size,
+                      height: p.size,
+                      opacity: p.opacity,
+                      backgroundColor: `rgba(${p.color},1)`,
+                      animation: `ambientParticleDrift ${p.dur}s ease-in-out ${p.delay}s infinite alternate`,
+                      '--dx': '14px',
+                      '--dy': '-10px',
+                    } as React.CSSProperties}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>

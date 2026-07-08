@@ -36,26 +36,52 @@
 
 :root {
   color-scheme: dark;
-  --background: #05060d;
-  --foreground: #f7f7fa;
-  --card: #070716;
-  --card-foreground: #f7f7fa;
+
+  /*
+   * MASTER PALETTE — derived from the Hero/About artwork's shared visual
+   * language (near-black violet-black, graphite metallic, controlled violet
+   * illumination, restrained magenta, minimal functional cyan).
+   *
+   * Every other token below is either a direct alias of these, or a
+   * low-opacity derivative. Tune the artwork↔site edge match by adjusting
+   * ONLY these values — everything downstream follows automatically.
+   */
+  --canvas: #05060d;
+  --canvas-raised: #070716;
+  --surface-subtle: rgba(12, 10, 22, 0.55);
+  --surface-hover: rgba(18, 13, 31, 0.68);
+  --violet-primary: #8b5cf6;
+  --violet-soft: #a78bfa;
+  --magenta-energy: #d946ef;
+  --pink-activity: #ec4899;
+  --cyan-functional: #22d3ee;
+  --text-primary: #f7f7fa;
+  --text-secondary: #858897;
+  --edge-subtle: rgba(200, 190, 230, 0.07);
+
+  /* Existing shadcn-facing tokens now alias the master palette above.
+     Component code keeps using bg-background / text-primary / etc. —
+     nothing downstream needs to change. */
+  --background: var(--canvas);
+  --foreground: var(--text-primary);
+  --card: var(--canvas-raised);
+  --card-foreground: var(--text-primary);
   --popover: #09081a;
-  --popover-foreground: #f7f7fa;
-  --primary: #8b5cf6;
+  --popover-foreground: var(--text-primary);
+  --primary: var(--violet-primary);
   --primary-foreground: #ffffff;
   --secondary: #0b091d;
   --secondary-foreground: #e5e6ee;
   --muted: #0a0a18;
-  --muted-foreground: #858897;
-  --accent: #a855f7;
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--violet-soft);
   --accent-foreground: #ffffff;
   --destructive: #f43f5e;
   --success: #22c55e;
-  --danger: #ec4899;
-  --border: rgba(255, 255, 255, 0.08);
+  --danger: var(--pink-activity);
+  --border: var(--edge-subtle);
   --input: rgba(255, 255, 255, 0.1);
-  --ring: #8b5cf6;
+  --ring: var(--violet-primary);
   --radius: 0.75rem;
 }
 
@@ -68,10 +94,16 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    background-image: 
-      radial-gradient(ellipse 80% 50% at 15% 20%, rgba(124, 58, 237, 0.04) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 85% 30%, rgba(99, 102, 241, 0.03) 0%, transparent 55%),
-      radial-gradient(ellipse 70% 45% at 50% 80%, rgba(139, 92, 246, 0.025) 0%, transparent 50%);
+    /*
+     * Global atmospheric depth. Target balance: ~80-88% near-black,
+     * 8-14% violet, 2-5% magenta/pink, 0-3% cyan. Kept broad and soft
+     * enough that no single circle is ever consciously visible.
+     */
+    background-image:
+      radial-gradient(ellipse 80% 50% at 15% 20%, rgba(139, 92, 246, 0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 85% 30%, rgba(139, 92, 246, 0.03) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 45% at 50% 78%, rgba(139, 92, 246, 0.025) 0%, transparent 50%),
+      radial-gradient(ellipse 55% 35% at 60% 98%, rgba(217, 70, 239, 0.02) 0%, transparent 55%);
   }
 }
 
@@ -79,9 +111,34 @@
   .eyebrow {
     @apply text-primary text-xs font-semibold tracking-[0.2em] uppercase;
   }
+
+  /* Legacy general-purpose card surface. Prefer the border-role utilities
+     below for new work — reach for this only where a real contained
+     surface (a form, a discrete data module) is actually warranted. */
   .surface-card {
     @apply bg-card rounded-2xl border border-white/[0.07];
   }
+
+  /*
+   * BORDER SYSTEM — three roles only (see spec §17).
+   * Decorative "because it's a card" borders should not exist outside
+   * these roles.
+   */
+  /* A. structural: real interactive controls/forms */
+  .edge-structural {
+    border: 1px solid var(--input);
+  }
+  /* B. subtle separation: very low-opacity neutral-violet, for hairlines
+     between compact content, not full rectangles around every block */
+  .edge-subtle {
+    border-color: var(--edge-subtle);
+  }
+  /* C. active/focus: clear accessible violet */
+  .edge-focus {
+    outline: 2px solid color-mix(in srgb, var(--violet-primary) 55%, transparent);
+    outline-offset: 2px;
+  }
+
   .scroll-section {
     scroll-margin-top: 4rem;
   }
@@ -90,10 +147,22 @@
 @keyframes hero-float {
   0%,
   100% {
-    transform: translateY(0) rotateZ(0deg);
+    transform: translate(0, 0) rotateZ(0deg);
   }
   50% {
-    transform: translateY(-7px) rotateZ(0.35deg);
+    transform: translate(-1.5px, -5px) rotateZ(0.35deg);
+  }
+}
+
+/* Smaller-amplitude drift for small screens — same rhythm, gentler travel
+   so it never reads as "bouncing" on a compact stage. */
+@keyframes hero-float-mobile {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-1px, -2.5px);
   }
 }
 
@@ -104,6 +173,103 @@
   }
   50% {
     opacity: 1;
+  }
+}
+
+/* Motion Layer B — the ambient field breathing behind the artwork, as if
+   the system were powered. Scale stays inside 0.98-1.03 per spec. */
+@keyframes energy-core {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+/* Motion Layer C — an occasional, barely-visible signal traveling the
+   vertical axis of the artwork stack. Mostly invisible; only a small
+   fraction of the cycle shows any travel, so it reads as "occasional"
+   rather than continuous. */
+@keyframes energy-transfer {
+  0%,
+  78% {
+    opacity: 0;
+    transform: translateY(-46%);
+  }
+  84% {
+    opacity: 0.5;
+  }
+  92% {
+    opacity: 0;
+    transform: translateY(46%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(46%);
+  }
+}
+
+/* Motion Layer E — a faint diagonal sheen suggesting the system is
+   processing. Short, infrequent, never washes over text. */
+@keyframes light-sweep {
+  0%,
+  88% {
+    opacity: 0;
+    transform: translateX(-60%) rotate(8deg);
+  }
+  92% {
+    opacity: 0.35;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: translateX(160%) rotate(8deg);
+  }
+}
+
+.animate-energy-core {
+  animation: energy-core 9s ease-in-out infinite;
+}
+
+.animate-energy-transfer {
+  animation: energy-transfer 10s ease-in-out infinite;
+}
+
+.animate-light-sweep {
+  animation: light-sweep 13s ease-in-out infinite;
+}
+
+.animate-hero-float-mobile {
+  animation: hero-float-mobile 13s ease-in-out infinite alternate;
+}
+
+/* About's drift — smaller amplitude than Hero at every breakpoint, since
+   About should read as "quietly active" rather than "alive". */
+@keyframes about-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-1px, -3px);
+  }
+}
+
+.animate-about-float {
+  animation: about-float 15s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-energy-core,
+  .animate-energy-transfer,
+  .animate-light-sweep,
+  .animate-hero-float-mobile,
+  .animate-about-float {
+    animation: none;
   }
 }
 

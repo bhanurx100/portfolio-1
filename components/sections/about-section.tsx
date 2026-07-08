@@ -21,19 +21,20 @@ const principles = [
   },
 ]
 
-// Sparse, asymmetric particle placement distinct from the Hero field.
+// Sparse, asymmetric particle placement, distinct from the Hero field and
+// deliberately fewer (About is "quietly active," not "alive"). Only the
+// first is shown below `sm`.
 const ABOUT_FIELD_PARTICLES = [
-  { x: 8, y: 22, size: 1, opacity: 0.22, color: '168,85,247', dur: 20, delay: -3 },
-  { x: 74, y: 10, size: 2, opacity: 0.26, color: '139,92,246', dur: 16, delay: -7 },
-  { x: 88, y: 62, size: 1, opacity: 0.18, color: '96,165,250', dur: 23, delay: -9 },
-  { x: 30, y: 84, size: 2, opacity: 0.24, color: '168,85,247', dur: 19, delay: -5 },
+  { x: 8, y: 22, size: 1, opacity: 0.2, color: '168,85,247', dur: 20, delay: -3, mobile: true },
+  { x: 74, y: 10, size: 2, opacity: 0.22, color: '139,92,246', dur: 16, delay: -7, mobile: false },
+  { x: 30, y: 84, size: 2, opacity: 0.2, color: '217,70,239', dur: 19, delay: -5, mobile: false },
 ]
 
 export function AboutSection() {
   return (
     <section
       id="about"
-      className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 sm:px-6 lg:flex-row lg:gap-8 lg:px-8 lg:py-14"
+      className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-8 lg:px-8 lg:py-14"
     >
       {/* Left */}
       <div className="flex w-full flex-col gap-6 lg:w-[40%]">
@@ -68,12 +69,9 @@ export function AboutSection() {
         </div>
       </div>
 
-      {/* Right visual — related but distinct atmosphere from Hero */}
+      {/* Right visual — related but calmer atmosphere than Hero */}
       <div className="relative w-full lg:w-[60%]">
-        <div
-          className="relative mx-auto"
-          style={{ width: 'clamp(580px, 52vw, 800px)' }}
-        >
+        <div className="relative mx-auto w-[clamp(260px,80vw,380px)] max-w-full sm:w-[clamp(340px,68vw,480px)] md:w-[clamp(460px,62vw,600px)] lg:w-[clamp(580px,52vw,800px)]">
           {/* Asymmetric violet aura, offset toward the upper-left unlike Hero's centered haze */}
           <div
             aria-hidden="true"
@@ -87,7 +85,9 @@ export function AboutSection() {
             }}
           />
 
-          {/* Deep navy-black bridge tone */}
+          {/* Deep near-black bridge tone, with the stronger lower-center violet
+              illumination the artwork itself carries, plus a touch of magenta —
+              kept local rather than tinting the whole section purple. */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute"
@@ -95,12 +95,12 @@ export function AboutSection() {
               inset: '-12% -10% -14% -10%',
               zIndex: -2,
               background:
-                'radial-gradient(ellipse 62% 68% at 50% 52%, rgba(126,34,206,0.22) 0%, rgba(76,29,149,0.16) 34%, rgba(30,27,75,0.11) 58%, transparent 80%)',
+                'radial-gradient(ellipse 62% 68% at 50% 58%, rgba(126,34,206,0.24) 0%, rgba(217,70,239,0.05) 30%, rgba(76,29,149,0.14) 46%, rgba(30,27,75,0.1) 62%, transparent 82%)',
               filter: 'blur(46px)',
             }}
           />
 
-          {/* Tiny cool-blue edge influence, opposite corner from Hero's placement */}
+          {/* Restrained cyan edge influence, opposite corner from Hero's placement */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute"
@@ -108,12 +108,13 @@ export function AboutSection() {
               inset: '38% -8% -6% 46%',
               zIndex: -1,
               background:
-                'radial-gradient(ellipse 50% 50% at 70% 70%, rgba(56,142,230,0.09) 0%, transparent 72%)',
+                'radial-gradient(ellipse 50% 50% at 70% 70%, rgba(34,211,238,0.05) 0%, transparent 72%)',
               filter: 'blur(32px)',
             }}
           />
 
-          {/* Faint vertical signal trace behind the artwork */}
+          {/* Faint vertical signal trace behind the artwork — no travel
+              animation here; that's Hero's device, About stays quieter. */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute left-1/2 top-[6%] bottom-[10%] w-px -translate-x-1/2"
@@ -124,22 +125,49 @@ export function AboutSection() {
             }}
           />
 
-          <div className="relative">
-            <Image
-              src="/images/about-layers.png"
-              alt="Product development visual showing blueprint, design system, architecture and preview"
-              width={700}
-              height={800}
-              className="h-auto w-full object-contain"
-            />
+          <div className="relative animate-about-float">
+            {/*
+              Mobile/tablet focus composition:
+              The full artwork is a dense 16:9 technical scene (blueprint,
+              design system, architecture, preview) built around a central
+              console. At <768px that whole scene shrinks past the point of
+              readability, so instead of `object-contain` at tiny scale we
+              crop to a taller frame and use `object-cover` with the position
+              biased toward the upper-center, where the central console sits.
 
-            {/* Directional edge overlays for seamless integration */}
+              NOTE: object-position below is a reasonable starting bias, not
+              a value measured against the real file — the actual PNG wasn't
+              available in this pass. Once you can share it (or view it on a
+              real device), nudge the percentages so the console/blueprint
+              stay centered and nothing important is cut at the sides.
+            */}
+            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[16/11] md:hidden">
+              <Image
+                src="/images/about-layers.png"
+                alt="Product development visual showing blueprint, design system, architecture and preview"
+                fill
+                sizes="90vw"
+                className="object-cover object-[50%_38%]"
+              />
+            </div>
+            <div className="hidden md:block">
+              <Image
+                src="/images/about-layers.png"
+                alt="Product development visual showing blueprint, design system, architecture and preview"
+                width={700}
+                height={800}
+                sizes="600px"
+                className="h-auto w-full object-contain"
+              />
+            </div>
+
+            {/* Directional edge overlays, tied to the canvas token */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0"
               style={{
                 zIndex: 1,
-                background: 'linear-gradient(to right, #05060d 0%, rgba(5,6,13,0.7) 10%, transparent 100%)',
+                background: 'linear-gradient(to right, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
                 width: '9%',
               }}
             />
@@ -148,7 +176,7 @@ export function AboutSection() {
               className="pointer-events-none absolute inset-0"
               style={{
                 zIndex: 1,
-                background: 'linear-gradient(to left, #05060d 0%, rgba(5,6,13,0.7) 10%, transparent 100%)',
+                background: 'linear-gradient(to left, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
                 right: 0,
                 width: '9%',
               }}
@@ -158,7 +186,7 @@ export function AboutSection() {
               className="pointer-events-none absolute inset-0"
               style={{
                 zIndex: 1,
-                background: 'linear-gradient(to bottom, #05060d 0%, rgba(5,6,13,0.7) 10%, transparent 100%)',
+                background: 'linear-gradient(to bottom, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
                 height: '10%',
               }}
             />
@@ -167,18 +195,18 @@ export function AboutSection() {
               className="pointer-events-none absolute inset-0"
               style={{
                 zIndex: 1,
-                background: 'linear-gradient(to top, #05060d 0%, rgba(5,6,13,0.7) 12%, transparent 100%)',
+                background: 'linear-gradient(to top, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 12%, transparent 100%)',
                 bottom: 0,
                 height: '14%',
               }}
             />
 
-            {/* Sparse ambient particles around the image zone — different distribution than Hero */}
+            {/* Sparse ambient particles — About shows at most 1 on mobile, 3 on desktop */}
             <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ zIndex: 2 }}>
               {ABOUT_FIELD_PARTICLES.map((p, i) => (
                 <span
                   key={i}
-                  className="absolute rounded-full"
+                  className={p.mobile ? 'absolute rounded-full' : 'absolute hidden rounded-full sm:block'}
                   style={{
                     left: `${p.x}%`,
                     top: `${p.y}%`,
