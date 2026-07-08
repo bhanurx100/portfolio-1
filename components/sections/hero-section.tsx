@@ -146,44 +146,6 @@ export function HeroSection() {
           The 16:9 artwork preserves its composition at all breakpoints. */}
       <div className="relative w-full lg:w-[58%]">
         <div className="relative mx-auto w-full max-w-[800px]">
-          {/* Layer B+C: ambient violet/magenta field — "breathes" gently so
-              the system reads as powered rather than a static glow. */}
-          <div
-            aria-hidden="true"
-            className="animate-energy-core pointer-events-none absolute"
-            style={{
-              inset: '-18% -14% -20% -14%',
-              zIndex: -3,
-              background:
-                'radial-gradient(ellipse 60% 62% at 50% 46%, rgba(139,92,246,0.16) 0%, transparent 72%)',
-              filter: 'blur(60px)',
-            }}
-          />
-          <div
-            aria-hidden="true"
-            className="animate-energy-core pointer-events-none absolute"
-            style={{
-              inset: '-12% -10% -14% -10%',
-              zIndex: -2,
-              background:
-                'radial-gradient(ellipse 58% 62% at 54% 48%, rgba(91,33,182,0.24) 0%, rgba(217,70,239,0.05) 40%, rgba(15,23,42,0.12) 58%, transparent 78%)',
-              filter: 'blur(42px)',
-              animationDelay: '-3s',
-            }}
-          />
-
-          {/* Layer D: sparse restrained cyan accent — functional, not decorative */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute"
-            style={{
-              inset: '4% 30% 46% -6%',
-              zIndex: -1,
-              background:
-                'radial-gradient(ellipse 55% 55% at 30% 30%, rgba(34,211,238,0.06) 0%, transparent 70%)',
-              filter: 'blur(36px)',
-            }}
-          />
 
           {/* Scroll depth wrapper */}
           <div
@@ -205,55 +167,21 @@ export function HeroSection() {
               {/* Drift layer — CSS-animation-driven, kept on its own element
                   so it doesn't fight the inline transforms above */}
               <div ref={artRef} className="relative animate-hero-float-mobile lg:animate-hero-float">
-                <Image
-                  src="/images/hero-process.png"
-                  alt="Layered 3D process visual with rings representing Interface, Systems, Product and Impact"
-                  width={900}
-                  height={900}
-                  priority
-                  className="h-auto w-full object-contain"
-                />
+                {/* Hero artwork edge integration wrapper - dissolves empty peripheral background into black canvas */}
+                <div className="hero-artwork-wrapper relative">
+                  <div className="hero-artwork-top-scrim" />
+                  <div className="hero-artwork-bottom-scrim" />
+                  <Image
+                    src="/images/hero-process.png"
+                    alt="Layered 3D process visual with rings representing Interface, Systems, Product and Impact"
+                    width={900}
+                    height={900}
+                    priority
+                    className="h-auto w-full object-contain"
+                  />
+                </div>
               </div>
 
-              {/* Layer F: soft edge-feather overlays, tied to the canvas token */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  zIndex: 1,
-                  background: 'linear-gradient(to right, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
-                  width: '9%',
-                }}
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  zIndex: 1,
-                  background: 'linear-gradient(to left, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
-                  right: 0,
-                  width: '9%',
-                }}
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  zIndex: 1,
-                  background: 'linear-gradient(to bottom, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
-                  height: '10%',
-                }}
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  zIndex: 1,
-                  background: 'linear-gradient(to top, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 12%, transparent 100%)',
-                  bottom: 0,
-                  height: '14%',
-                }}
-              />
 
               {/* Motion Layer C: vertical energy transfer — a thin, mostly
                   invisible beam that occasionally travels the central axis.

@@ -74,108 +74,22 @@ export function AboutSection() {
           The artwork preserves its full composition at all breakpoints. */}
       <div className="relative w-full lg:w-[60%]">
         <div className="relative mx-auto w-full max-w-[800px]">
-          {/* Asymmetric violet aura, offset toward the upper-left unlike Hero's centered haze */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute"
-            style={{
-              inset: '-16% -16% -12% -8%',
-              zIndex: -3,
-              background:
-                'radial-gradient(ellipse 56% 60% at 34% 38%, rgba(126,34,206,0.20) 0%, transparent 74%)',
-              filter: 'blur(52px)',
-            }}
-          />
-
-          {/* Deep near-black bridge tone, with the stronger lower-center violet
-              illumination the artwork itself carries, plus a touch of magenta —
-              kept local rather than tinting the whole section purple. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute"
-            style={{
-              inset: '-12% -10% -14% -10%',
-              zIndex: -2,
-              background:
-                'radial-gradient(ellipse 62% 68% at 50% 58%, rgba(126,34,206,0.24) 0%, rgba(217,70,239,0.05) 30%, rgba(76,29,149,0.14) 46%, rgba(30,27,75,0.1) 62%, transparent 82%)',
-              filter: 'blur(46px)',
-            }}
-          />
-
-          {/* Restrained cyan edge influence, opposite corner from Hero's placement */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute"
-            style={{
-              inset: '38% -8% -6% 46%',
-              zIndex: -1,
-              background:
-                'radial-gradient(ellipse 50% 50% at 70% 70%, rgba(34,211,238,0.05) 0%, transparent 72%)',
-              filter: 'blur(32px)',
-            }}
-          />
-
-          {/* Faint vertical signal trace behind the artwork — no travel
-              animation here; that's Hero's device, About stays quieter. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-[6%] bottom-[10%] w-px -translate-x-1/2"
-            style={{
-              zIndex: -1,
-              background:
-                'linear-gradient(to bottom, transparent, rgba(139,92,246,0.14) 30%, rgba(139,92,246,0.14) 70%, transparent)',
-            }}
-          />
 
           <div className="relative animate-about-float">
-            <Image
-              src="/images/about-layers.png"
-              alt="Product development visual showing blueprint, design system, architecture and preview"
-              width={700}
-              height={800}
-              sizes="100vw"
-              className="h-auto w-full object-contain"
-            />
+            {/* About artwork edge integration wrapper - dissolves empty peripheral background into black canvas */}
+            <div className="about-artwork-wrapper relative">
+              <div className="about-artwork-top-scrim" />
+              <div className="about-artwork-bottom-scrim" />
+              <Image
+                src="/images/about-layers.png"
+                alt="Product development visual showing blueprint, design system, architecture and preview"
+                width={700}
+                height={800}
+                sizes="100vw"
+                className="h-auto w-full object-contain"
+              />
+            </div>
 
-            {/* Directional edge overlays, tied to the canvas token */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                zIndex: 1,
-                background: 'linear-gradient(to right, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
-                width: '9%',
-              }}
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                zIndex: 1,
-                background: 'linear-gradient(to left, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
-                right: 0,
-                width: '9%',
-              }}
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                zIndex: 1,
-                background: 'linear-gradient(to bottom, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 10%, transparent 100%)',
-                height: '10%',
-              }}
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                zIndex: 1,
-                background: 'linear-gradient(to top, var(--background) 0%, color-mix(in srgb, var(--background) 70%, transparent) 12%, transparent 100%)',
-                bottom: 0,
-                height: '14%',
-              }}
-            />
 
             {/* Sparse ambient particles — About shows at most 1 on mobile, 3 on desktop */}
             <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ zIndex: 2 }}>

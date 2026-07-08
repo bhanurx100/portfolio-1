@@ -15,7 +15,7 @@ export function GitHubCta({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group hover:border-primary/30 flex items-center justify-between gap-4 p-6 transition-colors"
+      className="group hover:border-primary/30 flex items-center justify-between gap-4 p-6 transition-colors"
     >
       <span className="flex items-center gap-4">
         <span className="border-border bg-secondary inline-flex size-12 shrink-0 items-center justify-center rounded-full border">

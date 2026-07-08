@@ -405,7 +405,7 @@ export function GitHubActivitySection() {
                 </p>
             </div>
 
-            <div className="surface-card p-4 sm:p-5">
+            <div className="p-4 sm:p-5">
                 <ContributionsGraph />
             </div>
         </section>

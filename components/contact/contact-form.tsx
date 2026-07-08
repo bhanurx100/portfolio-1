@@ -49,7 +49,7 @@ export function ContactForm() {
   }
 
   return (
-    <div className="surface-card flex flex-col gap-6 p-6 sm:p-8">
+    <div className="flex flex-col gap-6 p-6 sm:p-8">
       <div className="flex items-center gap-4">
         <span className="border-primary/30 bg-primary/10 text-primary inline-flex size-13 shrink-0 items-center justify-center rounded-full border">
           <Mail className="size-5" aria-hidden="true" />
@@ -72,7 +72,7 @@ export function ContactForm() {
             {...register('name')}
             type="text"
             placeholder="Enter your name"
-            className="border-input bg-secondary/40 placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-lg border px-4 py-3 text-sm outline-none focus-visible:ring-2"
+            className="border-b border-input bg-transparent placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-0 w-full px-4 py-3 text-sm outline-none transition-colors"
           />
           {errors.name && (
             <p className="text-destructive text-xs">{errors.name.message}</p>
@@ -87,7 +87,7 @@ export function ContactForm() {
             {...register('email')}
             type="email"
             placeholder="Enter your email"
-            className="border-input bg-secondary/40 placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-lg border px-4 py-3 text-sm outline-none focus-visible:ring-2"
+            className="border-b border-input bg-transparent placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-0 w-full px-4 py-3 text-sm outline-none transition-colors"
           />
           {errors.email && (
             <p className="text-destructive text-xs">{errors.email.message}</p>
@@ -102,7 +102,7 @@ export function ContactForm() {
             {...register('subject')}
             type="text"
             placeholder="What's this about?"
-            className="border-input bg-secondary/40 placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-lg border px-4 py-3 text-sm outline-none focus-visible:ring-2"
+            className="border-b border-input bg-transparent placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-0 w-full px-4 py-3 text-sm outline-none transition-colors"
           />
           {errors.subject && (
             <p className="text-destructive text-xs">{errors.subject.message}</p>

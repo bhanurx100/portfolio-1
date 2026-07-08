@@ -9,15 +9,15 @@ type Particle = {
   vy: number
   size: number
   baseOpacity: number
-  hue: 'violet' | 'cyan'
+  hue: 'white' | 'cool-white' | 'light-pink' | 'accent-pink' | 'magenta'
 }
 
-// Muted violet dominates; only a handful of dim cyan particles for
-// functional-accent depth. Blue was previously used here but isn't part of
-// the master 4-color palette (violet / magenta / pink / cyan) — cyan is the
-// approved restrained accent, so it replaces blue at a similar low share.
-const VIOLET = { r: 139, g: 92, b: 246 }
-const CYAN = { r: 34, g: 211, b: 238 }
+// Controlled mix of soft white and pink/magenta for atmospheric depth
+const SOFT_WHITE = { r: 255, g: 255, b: 255 }
+const COOL_WHITE = { r: 245, g: 243, b: 255 }
+const LIGHT_PINK = { r: 249, g: 168, b: 212 }
+const ACCENT_PINK = { r: 244, g: 114, b: 182 }
+const MAGENTA = { r: 236, g: 72, b: 153 }
 
 const CONNECT_DISTANCE = 130
 const CONNECT_DISTANCE_SQ = CONNECT_DISTANCE * CONNECT_DISTANCE
@@ -52,8 +52,15 @@ export function AmbientBackground() {
       const count = Math.min(base, max)
 
       particles = Array.from({ length: count }, () => {
-        // ~93% muted violet, ~7% dim cyan for sparse depth accents.
-        const hue: Particle['hue'] = Math.random() < 0.07 ? 'cyan' : 'violet'
+        // Distribution: 60% soft white, 25% cool white, 10% light pink, 4% accent pink, 1% magenta
+        const rand = Math.random()
+        let hue: Particle['hue']
+        if (rand < 0.60) hue = 'white'
+        else if (rand < 0.85) hue = 'cool-white'
+        else if (rand < 0.95) hue = 'light-pink'
+        else if (rand < 0.99) hue = 'accent-pink'
+        else hue = 'magenta'
+
         const speed = (0.02 + Math.random() * 0.05) * (0.6 + Math.random())
         const angle = Math.random() * Math.PI * 2
         return {
@@ -61,8 +68,8 @@ export function AmbientBackground() {
           y: Math.random() * height,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          size: hue === 'cyan' ? 1 + Math.random() * 0.6 : 1 + Math.random() * 1.4,
-          baseOpacity: hue === 'cyan' ? 0.14 + Math.random() * 0.1 : 0.22 + Math.random() * 0.18,
+          size: 1 + Math.random() * 1.4,
+          baseOpacity: 0.08 + Math.random() * 0.12,
           hue,
         }
       })
@@ -108,7 +115,7 @@ export function AmbientBackground() {
               const t = 1 - distSq / CONNECT_DISTANCE_SQ
               const opacity = t * t * 0.08
               if (opacity > 0.004) {
-                ctx.strokeStyle = `rgba(${VIOLET.r},${VIOLET.g},${VIOLET.b},${opacity})`
+                ctx.strokeStyle = `rgba(255,255,255,${opacity * 0.5})`
                 ctx.lineWidth = 1
                 ctx.beginPath()
                 ctx.moveTo(a.x, a.y)
@@ -121,7 +128,15 @@ export function AmbientBackground() {
       }
 
       for (const p of particles) {
-        const c = p.hue === 'cyan' ? CYAN : VIOLET
+        let c
+        switch (p.hue) {
+          case 'white': c = SOFT_WHITE; break
+          case 'cool-white': c = COOL_WHITE; break
+          case 'light-pink': c = LIGHT_PINK; break
+          case 'accent-pink': c = ACCENT_PINK; break
+          case 'magenta': c = MAGENTA; break
+          default: c = SOFT_WHITE
+        }
         ctx.beginPath()
         ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${p.baseOpacity})`
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
@@ -184,39 +199,6 @@ export function AmbientBackground() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
-      {/* Broad, mostly-empty depth gradients — the "world" the particles float in */}
-      <div
-        className="absolute -top-40 left-1/4 h-[36rem] w-[36rem] rounded-full animate-grid-drift"
-        style={{
-          background:
-            'radial-gradient(circle, rgba(100,105,120,0.05) 0%, transparent 70%)',
-        }}
-      />
-      <div
-        className="absolute top-1/3 -right-40 h-[32rem] w-[32rem] rounded-full animate-grid-drift"
-        style={{
-          background:
-            'radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)',
-        }}
-      />
-      <div
-        className="absolute bottom-1/4 -left-40 h-[30rem] w-[30rem] rounded-full animate-grid-drift"
-        style={{
-          background:
-            'radial-gradient(circle, rgba(168,85,247,0.04) 0%, transparent 70%)',
-        }}
-      />
-      {/* A single faint magenta field, low in the viewport — the "closing
-          energy" the spec asks for near Contact, without tinting the whole
-          page. Never more than ~2-3% opacity contribution. */}
-      <div
-        className="absolute bottom-[-10%] right-1/3 h-[26rem] w-[26rem] rounded-full animate-grid-drift"
-        style={{
-          background:
-            'radial-gradient(circle, rgba(217,70,239,0.03) 0%, transparent 70%)',
-        }}
-      />
-
       <canvas ref={canvasRef} className="absolute inset-0" />
     </div>
   )
