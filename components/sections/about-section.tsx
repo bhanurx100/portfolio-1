@@ -34,7 +34,7 @@ export function AboutSection() {
   return (
     <section
       id="about"
-      className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-8 lg:px-8 lg:py-14"
+      className="scroll-section mx-auto flex max-w-7xl flex-col gap-5 px-4 pb-8 pt-12 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-8 lg:px-8 lg:py-14"
     >
       {/* Left */}
       <div className="flex w-full flex-col gap-6 lg:w-[40%]">
@@ -69,9 +69,11 @@ export function AboutSection() {
         </div>
       </div>
 
-      {/* Right visual — related but calmer atmosphere than Hero */}
+      {/* Right visual — related but calmer atmosphere than Hero.
+          Stage width uses available viewport width without artificial caps.
+          The artwork preserves its full composition at all breakpoints. */}
       <div className="relative w-full lg:w-[60%]">
-        <div className="relative mx-auto w-[clamp(260px,80vw,380px)] max-w-full sm:w-[clamp(340px,68vw,480px)] md:w-[clamp(460px,62vw,600px)] lg:w-[clamp(580px,52vw,800px)]">
+        <div className="relative mx-auto w-full max-w-[800px]">
           {/* Asymmetric violet aura, offset toward the upper-left unlike Hero's centered haze */}
           <div
             aria-hidden="true"
@@ -126,40 +128,14 @@ export function AboutSection() {
           />
 
           <div className="relative animate-about-float">
-            {/*
-              Mobile/tablet focus composition:
-              The full artwork is a dense 16:9 technical scene (blueprint,
-              design system, architecture, preview) built around a central
-              console. At <768px that whole scene shrinks past the point of
-              readability, so instead of `object-contain` at tiny scale we
-              crop to a taller frame and use `object-cover` with the position
-              biased toward the upper-center, where the central console sits.
-
-              NOTE: object-position below is a reasonable starting bias, not
-              a value measured against the real file — the actual PNG wasn't
-              available in this pass. Once you can share it (or view it on a
-              real device), nudge the percentages so the console/blueprint
-              stay centered and nothing important is cut at the sides.
-            */}
-            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[16/11] md:hidden">
-              <Image
-                src="/images/about-layers.png"
-                alt="Product development visual showing blueprint, design system, architecture and preview"
-                fill
-                sizes="90vw"
-                className="object-cover object-[50%_38%]"
-              />
-            </div>
-            <div className="hidden md:block">
-              <Image
-                src="/images/about-layers.png"
-                alt="Product development visual showing blueprint, design system, architecture and preview"
-                width={700}
-                height={800}
-                sizes="600px"
-                className="h-auto w-full object-contain"
-              />
-            </div>
+            <Image
+              src="/images/about-layers.png"
+              alt="Product development visual showing blueprint, design system, architecture and preview"
+              width={700}
+              height={800}
+              sizes="100vw"
+              className="h-auto w-full object-contain"
+            />
 
             {/* Directional edge overlays, tied to the canvas token */}
             <div

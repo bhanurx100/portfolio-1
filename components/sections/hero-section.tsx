@@ -80,7 +80,7 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="scroll-section relative mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-10 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-6 lg:px-8 lg:py-14"
+      className="scroll-section relative mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 pb-8 pt-12 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-6 lg:px-8 lg:py-14"
     >
       {/* Left */}
       <div className="relative z-10 flex w-full flex-col gap-5 lg:w-[42%]">
@@ -142,11 +142,10 @@ export function HeroSection() {
       </div>
 
       {/* Right visual — atmospheric integration zone.
-          Stage width is responsive per breakpoint (NOT one clamp forcing a
-          580px floor) — this is what previously forced the artwork to
-          render far wider than small viewports allow. */}
+          Stage width uses available viewport width without artificial caps.
+          The 16:9 artwork preserves its composition at all breakpoints. */}
       <div className="relative w-full lg:w-[58%]">
-        <div className="relative mx-auto w-[clamp(240px,82vw,360px)] max-w-full sm:w-[clamp(320px,72vw,460px)] md:w-[clamp(420px,62vw,560px)] lg:w-[clamp(580px,52vw,800px)]">
+        <div className="relative mx-auto w-full max-w-[800px]">
           {/* Layer B+C: ambient violet/magenta field — "breathes" gently so
               the system reads as powered rather than a static glow. */}
           <div
