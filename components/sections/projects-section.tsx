@@ -12,7 +12,12 @@ export function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="scroll-section scroll-mt-20 mx-auto flex max-w-[1480px] flex-col gap-5 px-4 pt-16 sm:px-6 lg:px-8 lg:pt-20"
+      className="scroll-section scroll-mt-20 mx-auto flex flex-col gap-5 pt-16 lg:pt-20"
+      style={{
+        maxWidth: 'clamp(1180px, 88vw, 1920px)',
+        paddingLeft: 'clamp(16px, 2vw, 48px)',
+        paddingRight: 'clamp(16px, 2vw, 48px)',
+      }}
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-3">
