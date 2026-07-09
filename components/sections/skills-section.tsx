@@ -145,7 +145,12 @@ export function SkillsSection() {
   return (
     <section
       id="skills"
-      className="scroll-section scroll-mt-20 mx-auto flex max-w-[1500px] flex-col gap-10 px-4 py-14 sm:px-6 lg:px-8 lg:py-20"
+      className="scroll-section scroll-mt-20 mx-auto flex flex-col gap-10 py-14 lg:py-20"
+      style={{
+        maxWidth: 'clamp(1180px, 88vw, 1920px)',
+        paddingLeft: 'clamp(16px, 2vw, 48px)',
+        paddingRight: 'clamp(16px, 2vw, 48px)',
+      }}
     >
       <div className="animate-section-enter flex max-w-2xl flex-col gap-3">
         <p className="eyebrow">Skills &amp; Technologies</p>
