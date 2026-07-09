@@ -76,15 +76,18 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="scroll-section scroll-mt-20 relative mx-auto flex max-w-[1600px] flex-col items-center gap-6 px-4 pb-10 pt-12 [overflow-x:clip] sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:flex-row lg:gap-8 lg:px-8 lg:py-14"
+      className="scroll-section scroll-mt-20 relative mx-auto flex flex-col items-center gap-6 px-4 pt-12 [overflow-x:clip] sm:px-6 lg:flex-row"
+      style={{
+        maxWidth: 'clamp(1180px, 88vw, 1920px)',
+        paddingLeft: 'clamp(16px, 2vw, 48px)',
+        paddingRight: 'clamp(16px, 2vw, 48px)',
+        paddingTop: 'clamp(48px, 6vw, 80px)',
+        paddingBottom: 'clamp(48px, 6vw, 80px)',
+        gap: 'clamp(24px, 3vw, 64px)',
+      }}
     >
-      {/* Left — content. Note: no min-height on this section below `lg`.
-          That forced min-height was the cause of the large empty gap
-          after the artwork on mobile — the section was reserving full
-          viewport height even though content was shorter. Height is now
-          auto below `lg` and only the desktop row gets the viewport-aware
-          min-height. */}
-      <div className="relative z-10 flex w-full flex-col gap-5 lg:w-[48%]">
+      {/* Left — content column */}
+      <div className="relative z-10 flex w-full flex-col gap-5 lg:w-[44%]">
         <span
           style={ENTER(0)}
           className="border-border bg-card inline-flex w-fit items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium"
@@ -204,13 +207,14 @@ export function HeroSection() {
         </Link>
       </div>
 
-      {/* Right visual. Column widened to 54% and the artwork is allowed to
-          overflow past its column toward the page edge on large screens
-          (clipped safely by [overflow-x:clip] on the section) so it reads
-          as substantially larger than before, without shrinking the text
-          column. */}
-      <div style={ENTER(3)} className="relative w-full lg:w-[52%]">
-        <div className="relative mx-auto w-full max-w-[820px] lg:ml-auto lg:max-w-[950px]">
+      {/* Right — artwork column */}
+      <div style={ENTER(3)} className="relative w-full lg:w-[56%]">
+        <div
+          className="relative mx-auto w-full lg:ml-auto"
+          style={{
+            maxWidth: 'clamp(520px, 48vw, 980px)',
+          }}
+        >
           <div
             style={{
               transform: `translate3d(0, ${scrollShift}px, 0)`,
