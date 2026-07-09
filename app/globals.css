@@ -145,7 +145,7 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 8%;
+    width: 2.5%;
     background: linear-gradient(to right, #000000 0%, transparent 100%);
   }
 
@@ -154,7 +154,7 @@
     right: 0;
     top: 0;
     bottom: 0;
-    width: 8%;
+    width: 2.5%;
     background: linear-gradient(to left, #000000 0%, transparent 100%);
   }
 
@@ -164,7 +164,7 @@
     left: 0;
     right: 0;
     top: 0;
-    height: 6%;
+    height: 2%;
     background: linear-gradient(to bottom, #000000 0%, transparent 100%);
     pointer-events: none;
     z-index: 10;
@@ -176,7 +176,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 10%;
+    height: 2%;
     background: linear-gradient(to top, #000000 0%, transparent 100%);
     pointer-events: none;
     z-index: 10;
@@ -242,19 +242,19 @@
   /* Mobile-specific scrim adjustments - preserve more content for smaller screens */
   @media (max-width: 768px) {
     .hero-artwork-wrapper::before {
-      width: 6%;
+      width: 3%;
     }
 
     .hero-artwork-wrapper::after {
-      width: 6%;
+      width: 3%;
     }
 
     .hero-artwork-top-scrim {
-      height: 5%;
+      height: 2%;
     }
 
     .hero-artwork-bottom-scrim {
-      height: 8%;
+      height: 3%;
     }
 
     .about-artwork-wrapper::before {
