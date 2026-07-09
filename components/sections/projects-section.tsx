@@ -12,7 +12,7 @@ export function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="scroll-section mx-auto flex max-w-[1480px] flex-col gap-5 px-4 pt-16 sm:px-6 lg:px-8 lg:pt-20"
+      className="scroll-section scroll-mt-20 mx-auto flex max-w-[1480px] flex-col gap-5 px-4 pt-16 sm:px-6 lg:px-8 lg:pt-20"
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-3">
@@ -31,22 +31,44 @@ export function ProjectsSection() {
         {projects.slice(0, 2).map((project, index) => (
           <article
             key={project.slug}
-            className="grid grid-cols-1 gap-8 lg:grid-cols-[0.45fr_0.55fr] lg:items-center"
+            className="grid grid-cols-1 gap-10 lg:grid-cols-[0.48fr_0.52fr] lg:items-center"
           >
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-6">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-primary/60 font-mono text-xs tabular-nums">
                   0{index + 1}
                 </span>
-                <h3 className="text-2xl font-bold tracking-tight">
+                <h3 className="text-[28px] font-bold tracking-tight sm:text-[30px] lg:text-[32px]">
                   {project.name}
                 </h3>
                 <StatusBadge label={project.status} />
               </div>
-              <p className="font-medium">{project.subtitle}</p>
-              <p className="text-muted-foreground leading-relaxed text-pretty">
+              <p className="text-[20px] leading-tight font-semibold sm:text-[22px] lg:text-[24px]">
+                {project.tagline}
+              </p>
+              <p className="text-muted-foreground text-[17px] leading-[1.75] text-pretty lg:text-[18px]">
                 {project.cardDescription}
               </p>
+
+              {/* Build Focus Block */}
+              <div className="flex flex-col gap-2">
+                <p className="text-primary/80 text-[12px] font-semibold tracking-[0.15em] uppercase">
+                  Build Focus
+                </p>
+                <p className="text-muted-foreground text-[15px] leading-[1.7] text-pretty lg:text-[16px]">
+                  {project.buildFocus || 'Building responsive interfaces, application state, and data-backed workflows with focus on maintainability and user experience.'}
+                </p>
+              </div>
+
+              {/* Curiosity Hook */}
+              {project.curiosityHook && (
+                <div className="border-l-2 border-primary/30 pl-4">
+                  <p className="text-muted-foreground text-[15px] leading-relaxed text-pretty italic lg:text-[16px]">
+                    {project.curiosityHook}
+                  </p>
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-2">
                 {project.featureChips.map((chip) => (
                   <FeatureChip key={chip} label={chip} />
@@ -57,12 +79,12 @@ export function ProjectsSection() {
                   <TechChip key={chip} label={chip} />
                 ))}
               </div>
-              <div className="flex flex-wrap gap-3 pt-1">
+              <div className="flex flex-wrap gap-3 pt-2">
                 <Link
                   href={`/projects/${project.slug}`}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 group inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 group inline-flex items-center gap-2 rounded-lg px-5 py-3 text-[15px] font-semibold transition-colors lg:text-[16px]"
                 >
-                  View Project
+                  Explore {project.name} Case Study
                   <ArrowRight
                     className="size-4 transition-transform group-hover:translate-x-0.5"
                     aria-hidden="true"
@@ -72,12 +94,17 @@ export function ProjectsSection() {
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="border-border hover:border-primary/40 inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors"
+                  className="border-border hover:border-primary/40 inline-flex items-center gap-2 rounded-lg border px-5 py-3 text-[15px] font-semibold transition-colors lg:text-[16px]"
                 >
                   View on GitHub
                   <Code2 className="size-4" aria-hidden="true" />
                 </a>
               </div>
+
+              {/* Subtle helper text */}
+              <p className="text-muted-foreground/60 text-xs leading-relaxed">
+                See the product thinking, interface decisions and engineering approach behind the build.
+              </p>
             </div>
 
             {/* Visual - with edge blending */}

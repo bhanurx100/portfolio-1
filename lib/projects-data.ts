@@ -18,6 +18,8 @@ export type Project = {
   tagline: string
   subtitle: string
   cardDescription: string
+  buildFocus?: string
+  curiosityHook?: string
   description: string
   image: string
   imageAlt: string
@@ -49,10 +51,12 @@ export const projects: Project[] = [
     name: 'SplitFin',
     nameAccentIndex: 5,
     status: 'In Development',
-    tagline: 'Track. Split. Settle. All in one place.',
+    tagline: 'One place to understand money, shared expenses and what happens next.',
     subtitle: 'Smart finance tracking & expense splitting',
     cardDescription:
-      'SplitFin helps you track income and expenses, split bills with friends or groups, scan bills, and settle up easily. All in one place.',
+      'SplitFin is a finance product I\'m building to bring personal spending and shared expenses into one connected experience. Instead of treating transactions, categories, bill splits and settlements as isolated tools, the product is designed around the way money actually moves between people, accounts and everyday decisions.',
+    buildFocus: 'The interesting challenge is not a single dashboard — it is keeping transaction data, category views, account state and shared-expense workflows consistent as the product grows. I\'m shaping the experience around reusable feature modules, predictable data flows and responsive interfaces that stay clear across desktop and mobile.',
+    curiosityHook: 'Currently exploring smarter bill capture, duplicate-aware transaction flows and clearer settlement experiences.',
     description:
       'SplitFin is a personal finance and shared expense management app that helps users track income and expenses, split bills with friends or groups, scan bills, and settle up easily.',
     image: '/images/splitfin-preview.png',
@@ -176,22 +180,24 @@ export const projects: Project[] = [
     name: 'StayEase',
     nameAccentIndex: 4,
     status: 'In Development',
-    tagline: 'Discover. Book. Manage. Travel Smarter.',
+    tagline: 'Designing the journey from "Where should I stay?" to "Booked."',
     subtitle: 'Modern hotel booking experience',
     cardDescription:
-      'StayEase is a hotel booking platform where users can discover stays, compare prices, and book seamlessly with a smooth experience.',
+      'StayEase explores a complete accommodation discovery and booking journey — helping travelers move from broad search to confident selection without losing context along the way. The experience brings property discovery, comparison, stay details and booking decisions into a responsive product flow across desktop and mobile.',
+    buildFocus: 'The core challenge is maintaining a coherent experience while search criteria, filters, property choices and booking state keep changing. I designed the interface around reusable discovery components, responsive content hierarchy and interaction patterns that remain understandable from wide desktop layouts to narrow mobile screens.',
+    curiosityHook: 'A closer look at how search, comparison and booking decisions can feel like one continuous product journey.',
     description:
       'A modern hotel booking platform that combines hotel discovery, AI-assisted search, enriched hotel details from multiple providers, secure booking, and owner property management in one seamless experience.',
     image: '/images/stayease-preview.png',
     imageAlt:
       'StayEase hotel booking site on a laptop with a mobile hotel detail view',
     featureChips: [
-      'Property Search',
-      'Filters & Sorting',
+      'Property Discovery',
+      'Search & Filters',
+      'Stay Comparison',
       'Booking Flow',
-      'Secure Payments',
-      'User Accounts',
       'Responsive UI',
+      'Account Experience',
     ],
     techChips: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Prisma', 'PostgreSQL'],
     liveUrl: '#',
