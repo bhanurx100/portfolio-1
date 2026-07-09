@@ -19,7 +19,6 @@ function buildWeeks(contributions: Contribution[]): Week[] {
     const sorted = [...contributions].sort((a, b) => a.date.localeCompare(b.date))
     if (sorted.length === 0) return []
 
-    // Filter out any dates after today
     const validContributions = sorted.filter(c => {
         const cDate = new Date(c.date)
         cDate.setHours(0, 0, 0, 0)
@@ -50,22 +49,54 @@ const levelStyles: Record<number, string> = {
     4: 'bg-[#D9469A]',
 }
 
+// Cell sizing is now driven by the actual rendered width of the section
+// (via ResizeObserver) instead of a fixed 53-week pixel budget. That fixed
+// budget was the root cause of the graph only ever using part of the
+// available desktop width while the summary/legend row — which had no
+// matching max-width — stretched to the full section width and ended up
+// visually detached from the graph. Below MIN_CELL the graph switches to
+// a horizontally scrollable viewport instead of shrinking further, so
+// mobile keeps 53 legible weeks rather than 53 unreadable slivers.
+const GAP = 3
+const MIN_CELL = 11
+const MAX_CELL = 17
+
 function ContributionGraph({ contributions, total, earliestDate }: { contributions: Contribution[], total: number, earliestDate: string }) {
+    const containerRef = useRef<HTMLDivElement>(null)
     const viewportRef = useRef<HTMLDivElement>(null)
     const didInitialScroll = useRef(false)
     const [canScrollLeft, setCanScrollLeft] = useState(false)
     const [canScrollRight, setCanScrollRight] = useState(false)
+    const [containerWidth, setContainerWidth] = useState(0)
 
     const weeks = buildWeeks(contributions)
     const today = getToday()
-    const cellSize = 11
-    const gap = 3
-    const weekPitch = cellSize + gap
-    const visibleWeeks = 53
-    const targetWidth = visibleWeeks * weekPitch - gap
 
     useEffect(() => {
-        if (viewportRef.current && !didInitialScroll.current && weeks.length > 0) {
+        const el = containerRef.current
+        if (!el) return
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) setContainerWidth(entry.contentRect.width)
+        })
+        observer.observe(el)
+        return () => observer.disconnect()
+    }, [])
+
+    let cellSize = MIN_CELL
+    let scrollable = false
+    if (containerWidth > 0 && weeks.length > 0) {
+        const raw = Math.floor((containerWidth - (weeks.length - 1) * GAP) / weeks.length)
+        if (raw >= MIN_CELL) {
+            cellSize = Math.min(raw, MAX_CELL)
+        } else {
+            cellSize = MIN_CELL
+            scrollable = true
+        }
+    }
+    const weekPitch = cellSize + GAP
+
+    useEffect(() => {
+        if (viewportRef.current && !didInitialScroll.current && weeks.length > 0 && scrollable) {
             requestAnimationFrame(() => {
                 if (viewportRef.current) {
                     viewportRef.current.scrollLeft = viewportRef.current.scrollWidth - viewportRef.current.clientWidth
@@ -73,7 +104,7 @@ function ContributionGraph({ contributions, total, earliestDate }: { contributio
                 }
             })
         }
-    }, [weeks.length])
+    }, [weeks.length, scrollable])
 
     const handleScroll = () => {
         if (viewportRef.current) {
@@ -99,7 +130,6 @@ function ContributionGraph({ contributions, total, earliestDate }: { contributio
         }
     }
 
-    // Generate month labels
     const monthLabels: { weekIndex: number; label: string }[] = []
     const seenMonths = new Set<string>()
 
@@ -121,19 +151,19 @@ function ContributionGraph({ contributions, total, earliestDate }: { contributio
     const formattedEarliest = earliestDateObj.toLocaleString('default', { month: 'short', year: 'numeric' })
 
     return (
-        <div className="flex flex-col gap-4">
-            {/* Viewport with fixed width */}
-            <div className="relative" style={{ width: 'min(100%, max-content)', maxWidth: `${targetWidth}px` }}>
+        <div ref={containerRef} className="flex flex-col gap-4">
+            {/* Wrapper now always fills the section width — cells grow or
+                shrink to match, so the graph and the summary/legend row
+                below always share the same right edge. */}
+            <div className="relative w-full">
                 <div
                     ref={viewportRef}
                     role="img"
                     aria-label={`GitHub contribution graph: ${total.toLocaleString()} contributions since ${formattedEarliest}`}
-                    className="overflow-x-auto no-scrollbar"
+                    className={`no-scrollbar ${scrollable ? 'overflow-x-auto' : 'overflow-x-visible'}`}
                     onScroll={handleScroll}
                 >
-                    {/* Track with intrinsic width based on total weeks */}
-                    <div className="flex flex-col gap-2" style={{ width: 'max-content', minWidth: 'max-content' }}>
-                        {/* Month labels inside track */}
+                    <div className="flex flex-col gap-2" style={{ width: scrollable ? 'max-content' : '100%', minWidth: scrollable ? 'max-content' : undefined }}>
                         <div className="flex gap-[3px]">
                             {weeks.map((_, wi) => {
                                 const label = monthLabels.find(l => l.weekIndex === wi)
@@ -153,7 +183,6 @@ function ContributionGraph({ contributions, total, earliestDate }: { contributio
                             })}
                         </div>
 
-                        {/* Week columns in track */}
                         <div className="flex gap-[3px]">
                             {weeks.map((week, wi) => (
                                 <div
@@ -161,7 +190,7 @@ function ContributionGraph({ contributions, total, earliestDate }: { contributio
                                     className="grid flex-shrink-0"
                                     style={{
                                         gridTemplateRows: `repeat(7, ${cellSize}px)`,
-                                        gap: `${gap}px`,
+                                        gap: `${GAP}px`,
                                         width: `${cellSize}px`,
                                         minWidth: `${cellSize}px`,
                                     }}
@@ -193,30 +222,32 @@ function ContributionGraph({ contributions, total, earliestDate }: { contributio
                     </div>
                 </div>
 
-                {/* Navigation controls outside cell grid */}
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full pr-2">
-                    <button
-                        onClick={scrollLeftHalf}
-                        disabled={!canScrollLeft}
-                        className="bg-card/90 backdrop-blur-sm border-border/50 hover:border-[#D9469A]/50 disabled:opacity-30 disabled:hover:border-border/50 border rounded p-1.5 transition-all"
-                        aria-label="Scroll to older history"
-                    >
-                        <ArrowLeft className="size-3.5 text-muted-foreground" aria-hidden="true" />
-                    </button>
-                </div>
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full pl-2">
-                    <button
-                        onClick={scrollToLatest}
-                        disabled={!canScrollRight}
-                        className="bg-card/90 backdrop-blur-sm border-border/50 hover:border-[#D9469A]/50 disabled:opacity-30 disabled:hover:border-border/50 border rounded p-1.5 transition-all"
-                        aria-label="Scroll to latest"
-                    >
-                        <ArrowRight className="size-3.5 text-muted-foreground" aria-hidden="true" />
-                    </button>
-                </div>
+                {scrollable && (
+                    <>
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full pr-2">
+                            <button
+                                onClick={scrollLeftHalf}
+                                disabled={!canScrollLeft}
+                                className="bg-card/90 backdrop-blur-sm border-border/50 hover:border-[#D9469A]/50 disabled:opacity-30 disabled:hover:border-border/50 border rounded p-1.5 transition-all"
+                                aria-label="Scroll to older history"
+                            >
+                                <ArrowLeft className="size-3.5 text-muted-foreground" aria-hidden="true" />
+                            </button>
+                        </div>
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full pl-2">
+                            <button
+                                onClick={scrollToLatest}
+                                disabled={!canScrollRight}
+                                className="bg-card/90 backdrop-blur-sm border-border/50 hover:border-[#D9469A]/50 disabled:opacity-30 disabled:hover:border-border/50 border rounded p-1.5 transition-all"
+                                aria-label="Scroll to latest"
+                            >
+                                <ArrowRight className="size-3.5 text-muted-foreground" aria-hidden="true" />
+                            </button>
+                        </div>
+                    </>
+                )}
             </div>
 
-            {/* Summary row */}
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                     <p className="text-muted-foreground text-sm">
@@ -240,7 +271,7 @@ function ContributionGraph({ contributions, total, earliestDate }: { contributio
                             key={level}
                             aria-hidden="true"
                             className={`rounded-[2px] ${levelStyles[level]}`}
-                            style={{ width: `${cellSize}px`, height: `${cellSize}px` }}
+                            style={{ width: `${MIN_CELL}px`, height: `${MIN_CELL}px` }}
                         />
                     ))}
                     <span>More</span>
@@ -282,7 +313,6 @@ function ContributionsGraph() {
 
                 if (allContributions.length === 0) throw new Error('No contribution data available')
 
-                // Find earliest date from actual data (only from contributions with count > 0)
                 const withActivity = allContributions.filter(c => c.count > 0)
                 const sorted = [...withActivity].sort((a, b) => a.date.localeCompare(b.date))
                 const earliest = sorted.length > 0 ? sorted[0].date : allContributions[0].date
@@ -328,55 +358,50 @@ function ContributionsGraph() {
 }
 
 function ContributionsSkeleton() {
-    const cellSize = 11
-    const gap = 3
-    const weekPitch = cellSize + gap
+    const cellSize = MIN_CELL
     const visibleWeeks = 53
-    const targetWidth = visibleWeeks * weekPitch - gap
 
     return (
         <div className="flex flex-col gap-4" aria-hidden="true">
-            <div className="relative" style={{ width: 'min(100%, max-content)', maxWidth: `${targetWidth}px` }}>
-                <div className="overflow-x-auto no-scrollbar">
-                    <div className="flex flex-col gap-2" style={{ width: 'max-content' }}>
-                        <div className="flex gap-[3px]">
-                            {Array.from({ length: visibleWeeks }, (_, i) => (
-                                <div
-                                    key={i}
-                                    className="flex-shrink-0"
-                                    style={{ width: `${cellSize}px` }}
-                                >
-                                    <div className="h-3 w-8 bg-white/[0.04] rounded animate-pulse" />
-                                </div>
-                            ))}
-                        </div>
-                        <div className="flex gap-[3px]">
-                            {Array.from({ length: visibleWeeks }, (_, wi) => (
-                                <div
-                                    key={wi}
-                                    className="grid flex-shrink-0"
-                                    style={{
-                                        gridTemplateRows: `repeat(7, ${cellSize}px)`,
-                                        gap: `${gap}px`,
-                                        width: `${cellSize}px`,
-                                        minWidth: `${cellSize}px`,
-                                    }}
-                                >
-                                    {Array.from({ length: 7 }, (_, di) => (
-                                        <div
-                                            key={di}
-                                            className="bg-white/[0.04] rounded-[2px] animate-pulse"
-                                            style={{
-                                                width: `${cellSize}px`,
-                                                height: `${cellSize}px`,
-                                                minWidth: `${cellSize}px`,
-                                                minHeight: `${cellSize}px`,
-                                            }}
-                                        />
-                                    ))}
-                                </div>
-                            ))}
-                        </div>
+            <div className="w-full overflow-x-auto no-scrollbar">
+                <div className="flex flex-col gap-2" style={{ width: 'max-content', minWidth: '100%' }}>
+                    <div className="flex gap-[3px]">
+                        {Array.from({ length: visibleWeeks }, (_, i) => (
+                            <div
+                                key={i}
+                                className="flex-shrink-0"
+                                style={{ width: `${cellSize}px` }}
+                            >
+                                <div className="h-3 w-8 bg-white/[0.04] rounded animate-pulse" />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="flex gap-[3px]">
+                        {Array.from({ length: visibleWeeks }, (_, wi) => (
+                            <div
+                                key={wi}
+                                className="grid flex-shrink-0"
+                                style={{
+                                    gridTemplateRows: `repeat(7, ${cellSize}px)`,
+                                    gap: `${GAP}px`,
+                                    width: `${cellSize}px`,
+                                    minWidth: `${cellSize}px`,
+                                }}
+                            >
+                                {Array.from({ length: 7 }, (_, di) => (
+                                    <div
+                                        key={di}
+                                        className="bg-white/[0.04] rounded-[2px] animate-pulse"
+                                        style={{
+                                            width: `${cellSize}px`,
+                                            height: `${cellSize}px`,
+                                            minWidth: `${cellSize}px`,
+                                            minHeight: `${cellSize}px`,
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -392,7 +417,7 @@ export function GitHubActivitySection() {
     return (
         <section
             id="github"
-            className="scroll-section mx-auto flex max-w-[1320px] flex-col gap-5 px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
+            className="scroll-section scroll-mt-20 mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
         >
             <div className="flex flex-col gap-3">
                 <p className="eyebrow">BUILDING IN PUBLIC</p>
