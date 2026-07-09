@@ -65,10 +65,14 @@ export function SiteHeader() {
     id: string,
   ) => {
     if (isHome) {
-      e.preventDefault()
-      document
-        .getElementById(id)
-        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (id === 'home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        e.preventDefault()
+        document
+          .getElementById(id)
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
       setOpen(false)
     } else {
       setOpen(false)
@@ -81,8 +85,7 @@ export function SiteHeader() {
     <header className="border-border/60 bg-background/85 sticky top-0 z-50 border-b backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link
-          href="/#home"
-          onClick={(e) => handleNavClick(e, 'home')}
+          href="/"
           aria-label="Home"
           className="text-2xl font-bold tracking-tight transition-opacity hover:opacity-80 lg:text-[1.75rem]"
         >
