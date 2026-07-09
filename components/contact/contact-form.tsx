@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Lock, Mail, RotateCcw, Send } from 'lucide-react'
+import { Loader2, Mail, RotateCcw, Send } from 'lucide-react'
 
 const contactSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -16,6 +16,9 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
+
+const fieldClass =
+  'border-input bg-secondary/40 placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-primary/25 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-all focus-visible:ring-4'
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>('idle')
@@ -49,7 +52,7 @@ export function ContactForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6 sm:p-8">
+    <div className="border-border/60 flex flex-col gap-6 rounded-[22px] border bg-white/[0.015] p-6 sm:p-8">
       <div className="flex items-center gap-4">
         <span className="border-primary/30 bg-primary/10 text-primary inline-flex size-13 shrink-0 items-center justify-center rounded-full border">
           <Mail className="size-5" aria-hidden="true" />
@@ -72,10 +75,13 @@ export function ContactForm() {
             {...register('name')}
             type="text"
             placeholder="Enter your name"
-            className="border-b border-input bg-transparent placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-0 w-full px-4 py-3 text-sm outline-none transition-colors"
+            aria-invalid={!!errors.name}
+            className={fieldClass}
           />
           {errors.name && (
-            <p className="text-destructive text-xs">{errors.name.message}</p>
+            <p role="alert" className="text-destructive text-xs">
+              {errors.name.message}
+            </p>
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -87,10 +93,13 @@ export function ContactForm() {
             {...register('email')}
             type="email"
             placeholder="Enter your email"
-            className="border-b border-input bg-transparent placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-0 w-full px-4 py-3 text-sm outline-none transition-colors"
+            aria-invalid={!!errors.email}
+            className={fieldClass}
           />
           {errors.email && (
-            <p className="text-destructive text-xs">{errors.email.message}</p>
+            <p role="alert" className="text-destructive text-xs">
+              {errors.email.message}
+            </p>
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -102,10 +111,13 @@ export function ContactForm() {
             {...register('subject')}
             type="text"
             placeholder="What's this about?"
-            className="border-b border-input bg-transparent placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-0 w-full px-4 py-3 text-sm outline-none transition-colors"
+            aria-invalid={!!errors.subject}
+            className={fieldClass}
           />
           {errors.subject && (
-            <p className="text-destructive text-xs">{errors.subject.message}</p>
+            <p role="alert" className="text-destructive text-xs">
+              {errors.subject.message}
+            </p>
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -117,10 +129,13 @@ export function ContactForm() {
             {...register('message')}
             rows={5}
             placeholder="Tell me about your project or opportunity..."
-            className="border-input bg-secondary/40 placeholder:text-muted-foreground focus-visible:ring-ring w-full resize-y rounded-lg border px-4 py-3 text-sm outline-none focus-visible:ring-2"
+            aria-invalid={!!errors.message}
+            className={`${fieldClass} min-h-[150px] resize-y`}
           />
           {errors.message && (
-            <p className="text-destructive text-xs">{errors.message.message}</p>
+            <p role="alert" className="text-destructive text-xs">
+              {errors.message.message}
+            </p>
           )}
         </div>
 
@@ -128,9 +143,13 @@ export function ContactForm() {
           <button
             type="submit"
             disabled={status === 'submitting'}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary/40 inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-4 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
           >
-            <Send className="size-4" aria-hidden="true" />
+            {status === 'submitting' ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <Send className="size-4" aria-hidden="true" />
+            )}
             {status === 'submitting' ? 'Sending...' : 'Send Message'}
           </button>
           <button
@@ -139,7 +158,7 @@ export function ContactForm() {
               reset()
               setStatus('idle')
             }}
-            className="border-border hover:border-primary/40 inline-flex items-center justify-center gap-2 rounded-lg border px-8 py-3 text-sm font-semibold transition-colors"
+            className="border-border hover:border-primary/40 text-muted-foreground hover:text-foreground inline-flex h-12 items-center justify-center gap-2 rounded-lg border px-6 text-sm font-medium transition-colors"
           >
             <RotateCcw className="size-4" aria-hidden="true" />
             Reset
@@ -157,8 +176,7 @@ export function ContactForm() {
           </p>
         )}
 
-        <p className="text-muted-foreground flex items-center gap-2 text-sm">
-          <Lock className="size-3.5" aria-hidden="true" />
+        <p className="text-muted-foreground flex items-center gap-2 text-xs">
           Your information is safe with me. I&apos;ll never share your details.
         </p>
       </form>

@@ -46,7 +46,7 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="scroll-section mx-auto flex max-w-[1320px] flex-col gap-6 px-4 py-10 sm:px-6 lg:flex-row lg:px-8 lg:py-14"
+      className="scroll-section scroll-mt-20 mx-auto flex max-w-[1320px] flex-col gap-6 px-4 py-10 sm:px-6 lg:flex-row lg:px-8 lg:py-14"
     >
       <div className="flex flex-col gap-8 lg:w-[42%]">
         <div className="flex flex-col gap-3">
