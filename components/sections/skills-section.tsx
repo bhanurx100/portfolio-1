@@ -1,228 +1,226 @@
-'use client'
+import type { LucideIcon } from 'lucide-react'
+import {
+  Code2,
+  Database,
+  Layers,
+  Lightbulb,
+  MonitorSmartphone,
+  Rocket,
+  Server,
+  Wrench,
+  Zap,
+} from 'lucide-react'
 
-import { Braces, Code, Database, Globe, Layers, Palette, Rocket, Server } from 'lucide-react'
+type Group = {
+  key: string
+  icon: LucideIcon
+  title: string
+  supporting: string
+  accent: string
+  items: string[]
+  span?: boolean
+}
+
+const groups: Group[] = [
+  {
+    key: 'frontend',
+    icon: MonitorSmartphone,
+    title: 'Frontend Engineering',
+    supporting: 'Interfaces, component architecture and responsive product experiences.',
+    accent: '#8b5cf6',
+    span: true,
+    items: ['React.js', 'Next.js', 'TypeScript', 'Tailwind CSS', 'JavaScript (ES6+)', 'HTML5', 'CSS3'],
+  },
+  {
+    key: 'state',
+    icon: Layers,
+    title: 'State & Application Data',
+    supporting: 'Server state, client state and predictable application data flow.',
+    accent: '#22d3ee',
+    items: ['TanStack Query', 'Redux Toolkit', 'Zustand', 'Context API', 'Zod'],
+  },
+  {
+    key: 'backend',
+    icon: Server,
+    title: 'Backend & APIs',
+    supporting: 'Application logic, API design and authenticated workflows.',
+    accent: '#4ade80',
+    items: ['Node.js', 'Express.js', 'REST APIs', 'JWT'],
+  },
+  {
+    key: 'data',
+    icon: Database,
+    title: 'Data Layer',
+    supporting: 'Persistent data, schema design and application data access.',
+    accent: '#f59e0b',
+    items: ['PostgreSQL', 'MongoDB', 'Prisma'],
+  },
+  {
+    key: 'delivery',
+    icon: Wrench,
+    title: 'Delivery & Tooling',
+    supporting: 'Development workflow, testing, deployment and iteration.',
+    accent: '#60a5fa',
+    items: ['Git', 'GitHub', 'Postman', 'Vercel', 'Docker'],
+  },
+]
+
+const principles: { icon: LucideIcon; title: string; description: string; accent: string }[] = [
+  {
+    icon: Lightbulb,
+    title: 'Product Thinking',
+    description: 'Understand the problem before shaping the solution.',
+    accent: '#8b5cf6',
+  },
+  {
+    icon: Zap,
+    title: 'Performance',
+    description: 'Keep interactions fast and rendering intentional.',
+    accent: '#f59e0b',
+  },
+  {
+    icon: Code2,
+    title: 'Maintainability',
+    description: 'Build structures that remain understandable as features grow.',
+    accent: '#22d3ee',
+  },
+  {
+    icon: Rocket,
+    title: 'Ship & Improve',
+    description: 'Release, observe real use and refine from evidence.',
+    accent: '#ec4899',
+  },
+]
+
+// One skill component for every category — a compact tinted chip. Frontend
+// no longer gets a special larger card treatment; it only gets a wider
+// module (spanning both grid columns) so its longer list has room.
+function SkillChip({ name, accent }: { name: string; accent: string }) {
+  return (
+    <span
+      className="flex min-h-11 items-center justify-center rounded-lg px-3 py-2 text-center text-xs font-medium text-[#d8d4de] transition-colors sm:justify-start sm:text-left"
+      style={{
+        background: 'linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))',
+        border: `1px solid ${accent}28`,
+      }}
+    >
+      {name}
+    </span>
+  )
+}
+
+function CapabilityCard({ group }: { group: Group }) {
+  return (
+    <div
+      className={`animate-section-enter flex flex-col gap-4 rounded-[20px] p-5 sm:p-6 ${group.span ? 'sm:col-span-2' : ''
+        }`}
+      style={{
+        background: 'linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))',
+        border: `1px solid ${group.accent}2e`,
+      }}
+    >
+      <div className="flex items-start gap-3">
+        <span
+          className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg"
+          style={{ backgroundColor: `${group.accent}18`, color: group.accent }}
+        >
+          <group.icon className="size-4.5" aria-hidden="true" />
+        </span>
+        <div className="flex flex-col gap-0.5">
+          <h3 className="text-sm font-semibold">{group.title}</h3>
+          <p className="text-muted-foreground text-xs leading-relaxed">{group.supporting}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+        {group.items.map((name) => (
+          <SkillChip key={name} name={name} accent={group.accent} />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export function SkillsSection() {
   return (
     <section
       id="skills"
-      className="scroll-section mx-auto flex min-h-[60vh] max-w-[1480px] flex-col gap-8 px-4 py-12 sm:px-6 lg:px-8 lg:py-16 xl:min-h-[70vh]"
+      className="scroll-section scroll-mt-20 mx-auto flex max-w-[1500px] flex-col gap-10 px-4 py-14 sm:px-6 lg:px-8 lg:py-20"
     >
-      <div className="flex flex-col gap-3 lg:flex-row lg:gap-12">
-        {/* Left Intro Column - 30% */}
-        <div className="flex w-full flex-col gap-4 lg:w-[30%] lg:sticky lg:top-24 lg:self-start">
-          <p className="eyebrow">SKILLS</p>
-          <h2 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">
-            The stack behind
-            <br />
-            what I ship.
-          </h2>
-          <p className="text-muted-foreground max-w-md leading-relaxed text-pretty">
-            Frontend is where I&apos;m strongest. I work across the application stack
-            when the product needs it.
-          </p>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="inline-flex h-2 w-2 rounded-full bg-primary/70" />
-            <span>Frontend-focused</span>
-            <span className="text-muted-foreground/50">·</span>
-            <span>Full-stack capable</span>
-          </div>
+      <div className="animate-section-enter flex max-w-2xl flex-col gap-3">
+        <p className="eyebrow">Skills &amp; Technologies</p>
+        <h2 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">
+          The stack behind
+          <br />
+          what I ship.
+        </h2>
+        <p className="text-muted-foreground leading-relaxed text-pretty">
+          Frontend is where I&apos;m strongest. I work across the application stack when the
+          product needs it — from interface architecture and state management to APIs, data
+          and delivery.
+        </p>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,66%)_minmax(0,34%)] lg:gap-8">
+        {/* Capability matrix — one grammar for every card and every chip */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {groups.map((group) => (
+            <CapabilityCard key={group.key} group={group} />
+          ))}
         </div>
 
-        {/* Right Visual Skill Field - 70% */}
-        <div className="flex w-full flex-col gap-10 lg:w-[70%]">
-          {/* Primary Technology Constellation */}
-          <div className="relative">
-            <div className="mb-6 flex items-center gap-3">
-              <span className="text-primary/60 font-mono text-xs tabular-nums">
-                01
-              </span>
-              <h3 className="text-sm font-semibold tracking-wide uppercase">
-                Primary Technologies
-              </h3>
-            </div>
-
-            {/* Constellation Layout */}
-            <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-              {/* React.js - Center/Primary */}
-              <div className="group relative flex flex-col items-center gap-3 rounded-2xl border border-[#22D3EE]/20 bg-[#22D3EE]/5 p-6 transition-all hover:border-[#22D3EE]/40 hover:-translate-y-1">
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-[#22D3EE]/20 blur-xl" />
-                  <div className="relative flex size-14 items-center justify-center rounded-xl bg-[#22D3EE]/10 text-[#22D3EE]">
-                    <Code className="size-7" aria-hidden="true" />
-                  </div>
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-semibold text-[#22D3EE]">React.js</p>
-                  <p className="text-muted-foreground text-xs">Product interfaces</p>
-                </div>
-                <div className="absolute -bottom-1 left-1/2 size-2 -translate-x-1/2 rounded-full bg-[#22D3EE] opacity-60" />
-              </div>
-
-              {/* Next.js */}
-              <div className="group relative flex flex-col items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 transition-all hover:border-white/[0.15] hover:-translate-y-1">
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-primary/10 blur-xl" />
-                  <div className="relative flex size-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <Globe className="size-7" aria-hidden="true" />
-                  </div>
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-semibold text-primary">Next.js</p>
-                  <p className="text-muted-foreground text-xs">Application architecture</p>
-                </div>
-              </div>
-
-              {/* TypeScript */}
-              <div className="group relative flex flex-col items-center gap-3 rounded-2xl border border-[#A855F7]/20 bg-[#A855F7]/5 p-6 transition-all hover:border-[#A855F7]/40 hover:-translate-y-1">
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-[#A855F7]/20 blur-xl" />
-                  <div className="relative flex size-14 items-center justify-center rounded-xl bg-[#A855F7]/10 text-[#A855F7]">
-                    <Braces className="size-7" aria-hidden="true" />
-                  </div>
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-semibold text-[#A855F7]">TypeScript</p>
-                  <p className="text-muted-foreground text-xs">Typed development</p>
-                </div>
-              </div>
-
-              {/* Tailwind CSS */}
-              <div className="group relative flex flex-col items-center gap-3 rounded-2xl border border-[#D946EF]/20 bg-[#D946EF]/5 p-6 transition-all hover:border-[#D946EF]/40 hover:-translate-y-1">
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-[#D946EF]/20 blur-xl" />
-                  <div className="relative flex size-14 items-center justify-center rounded-xl bg-[#D946EF]/10 text-[#D946EF]">
-                    <Palette className="size-7" aria-hidden="true" />
-                  </div>
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-semibold text-[#D946EF]">Tailwind CSS</p>
-                  <p className="text-muted-foreground text-xs">Responsive systems</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Subtle orbital arc decoration */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[120%] w-[140%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/[0.03] lg:block" />
+        {/* My Approach */}
+        <div
+          className="animate-section-enter flex flex-col gap-6 rounded-[20px] p-6"
+          style={{
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))',
+            border: '1px solid rgba(255,255,255,0.07)',
+          }}
+        >
+          <div className="flex flex-col gap-3">
+            <span className="border-primary/30 bg-primary/10 text-primary inline-flex w-fit items-center rounded-full border px-3 py-1 text-[0.65rem] font-semibold tracking-[0.15em] uppercase">
+              My Approach
+            </span>
+            <h3 className="text-xl font-bold leading-snug">
+              Product-minded. Frontend-first.{' '}
+              <span className="text-primary">Built for real use.</span>
+            </h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              I care about the decisions behind the interface — how data flows, how components
+              scale, how users experience the product and how safely the team can keep shipping.
+            </p>
           </div>
 
-          {/* Capability Rails */}
-          <div className="flex flex-col gap-8">
-            {/* State & Data */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-primary/60 font-mono text-xs tabular-nums">
-                  02
+          <div className="flex flex-col gap-4">
+            {principles.map((p) => (
+              <div key={p.title} className="flex items-start gap-3">
+                <span
+                  className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg"
+                  style={{ backgroundColor: `${p.accent}18`, color: p.accent }}
+                >
+                  <p.icon className="size-4" aria-hidden="true" />
                 </span>
-                <h3 className="text-sm font-semibold tracking-wide uppercase text-[#22D3EE]">
-                  State & Data
-                </h3>
+                <div className="flex flex-col gap-0.5">
+                  <p className="text-sm font-semibold">{p.title}</p>
+                  <p className="text-muted-foreground text-xs leading-relaxed">{p.description}</p>
+                </div>
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Layers className="size-4 text-[#22D3EE]/70" />
-                  TanStack Query
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Layers className="size-4 text-[#22D3EE]/70" />
-                  Redux Toolkit
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Layers className="size-4 text-[#22D3EE]/70" />
-                  Zustand
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="text-[#D8D4DE]">Context API</span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="text-[#D8D4DE]">Zod</span>
-              </div>
-            </div>
+            ))}
+          </div>
 
-            {/* Backend & APIs */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-primary/60 font-mono text-xs tabular-nums">
-                  03
-                </span>
-                <h3 className="text-sm font-semibold tracking-wide uppercase text-[#8B5CF6]">
-                  Backend & APIs
-                </h3>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Server className="size-4 text-[#8B5CF6]/70" />
-                  Node.js
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Server className="size-4 text-[#8B5CF6]/70" />
-                  Express.js
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="text-[#D8D4DE]">REST APIs</span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="text-[#D8D4DE]">JWT</span>
-              </div>
-            </div>
-
-            {/* Database */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-primary/60 font-mono text-xs tabular-nums">
-                  04
-                </span>
-                <h3 className="text-sm font-semibold tracking-wide uppercase text-[#F472B6]">
-                  Database
-                </h3>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Database className="size-4 text-[#F472B6]/70" />
-                  PostgreSQL
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Database className="size-4 text-[#F472B6]/70" />
-                  MongoDB
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="text-[#D8D4DE]">Prisma</span>
-              </div>
-            </div>
-
-            {/* Ship */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-primary/60 font-mono text-xs tabular-nums">
-                  05
-                </span>
-                <h3 className="text-sm font-semibold tracking-wide uppercase text-[#22C55E]">
-                  Ship
-                </h3>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Code className="size-4 text-[#22C55E]/70" />
-                  Git
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Code className="size-4 text-[#22C55E]/70" />
-                  GitHub
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="flex items-center gap-2 text-[#D8D4DE]">
-                  <Rocket className="size-4 text-[#22C55E]/70" />
-                  Vercel
-                </span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="text-[#D8D4DE]">Docker</span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="text-[#D8D4DE]">Postman</span>
-              </div>
-            </div>
+          <div className="flex flex-col gap-1.5 border-t border-white/[0.07] pt-4">
+            <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.1em] uppercase">
+              <span
+                className="size-1.5 rounded-full"
+                style={{ backgroundColor: '#4ade80' }}
+                aria-hidden="true"
+              />
+              Current Focus
+            </span>
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              Building SplitFin while deepening backend architecture, data flows and
+              production-ready full-stack patterns.
+            </p>
           </div>
         </div>
       </div>
