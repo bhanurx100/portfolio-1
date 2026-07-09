@@ -1,13 +1,11 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowRight, Mail } from 'lucide-react'
+import { ArrowRight, Download, Mail } from 'lucide-react'
+import { siteConfig } from '@/lib/site-config'
 
-// Fixed, deterministic foreground particles that drift across the artwork
-// region only — sparse, dim, and mostly violet with one magenta accent and
-// one restrained cyan accent. The last two are hidden below `sm` so mobile
-// only ever shows three, per the "2-4 particles on mobile" motion spec.
 const HERO_FIELD_PARTICLES = [
   { x: 12, y: 18, size: 2, opacity: 0.3, color: '139,92,246', dur: 15, delay: -2, mobile: true },
   { x: 66, y: 78, size: 2, opacity: 0.24, color: '217,70,239', dur: 18, delay: -4, mobile: true },
@@ -15,6 +13,10 @@ const HERO_FIELD_PARTICLES = [
   { x: 82, y: 12, size: 1, opacity: 0.18, color: '34,211,238', dur: 21, delay: -8, mobile: false },
   { x: 90, y: 55, size: 1, opacity: 0.16, color: '139,92,246', dur: 19, delay: -6, mobile: false },
 ]
+
+const ENTER = (step: number) => ({
+  animation: `hero-content-enter 0.6s ease-out ${step * 70}ms both`,
+})
 
 export function HeroSection() {
   const artRef = useRef<HTMLDivElement>(null)
@@ -24,16 +26,10 @@ export function HeroSection() {
   const scrollEnabledRef = useRef(false)
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isTouch = window.matchMedia('(pointer: coarse)').matches
     const isSmallViewport = window.matchMedia('(max-width: 767px)').matches
-
-    // Pointer depth: desktop pointer devices only (Motion Layer F).
     parallaxEnabledRef.current = !prefersReducedMotion && !isTouch
-    // Scroll depth: desktop/tablet only, skipped on small viewports and
-    // reduced motion (Motion Layer G).
     scrollEnabledRef.current = !prefersReducedMotion && !isSmallViewport
   }, [])
 
@@ -49,13 +45,10 @@ export function HeroSection() {
 
   const handlePointerLeave = useCallback(() => setParallax({ x: 0, y: 0 }), [])
 
-  // Motion Layer G — scroll depth. Extremely small (max ~10px), rAF-throttled,
-  // passive, and fully disabled on small viewports / reduced motion.
   useEffect(() => {
     const section = document.getElementById('home')
     if (!section) return
     let ticking = false
-
     const update = () => {
       ticking = false
       if (!scrollEnabledRef.current) return
@@ -65,57 +58,83 @@ export function HeroSection() {
       const shift = Math.max(-10, Math.min(10, distance * -0.015))
       setScrollShift(shift)
     }
-
     const onScroll = () => {
       if (ticking) return
       ticking = true
       requestAnimationFrame(update)
     }
-
     update()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const scrollTo = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <section
       id="home"
-      className="scroll-section relative mx-auto flex min-h-[85vh] max-w-[1600px] flex-col items-center gap-5 px-4 pb-8 pt-12 [overflow-x:clip] sm:px-6 lg:flex-row lg:gap-6 lg:px-8 lg:py-16 xl:min-h-[800px]"
+      className="scroll-section scroll-mt-20 relative mx-auto flex max-w-[1600px] flex-col items-center gap-6 px-4 pb-10 pt-12 [overflow-x:clip] sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:flex-row lg:gap-8 lg:px-8 lg:py-14"
     >
-      {/* Left */}
-      <div className="relative z-10 flex w-full flex-col gap-6 lg:w-[46%]">
-        <span className="border-border bg-card inline-flex w-fit items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium">
+      {/* Left — content. Note: no min-height on this section below `lg`.
+          That forced min-height was the cause of the large empty gap
+          after the artwork on mobile — the section was reserving full
+          viewport height even though content was shorter. Height is now
+          auto below `lg` and only the desktop row gets the viewport-aware
+          min-height. */}
+      <div className="relative z-10 flex w-full flex-col gap-5 lg:w-[48%]">
+        <span
+          style={ENTER(0)}
+          className="border-border bg-card inline-flex w-fit items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium"
+        >
           <span className="bg-success size-2 rounded-full" aria-hidden="true" />
           Available for opportunities
         </span>
 
-        <div className="flex flex-col gap-4">
-          <p className="eyebrow">{"HEY, I'M"}</p>
-          <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+        <p style={ENTER(1)} className="eyebrow">
+          Software Engineer · Frontend-Focused Full Stack
+        </p>
+
+        <div style={ENTER(2)} className="flex flex-col gap-2">
+          <p className="text-muted-foreground text-lg font-medium">Hi, I&apos;m</p>
+          <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-[3.25rem] lg:leading-[1.05]">
             Bhanuprasad <span className="text-primary">L.</span>
           </h1>
-          <p className="text-lg font-semibold sm:text-xl">
-            Full Stack Developer · Product Builder
+        </div>
+
+        <h2
+          style={ENTER(3)}
+          className="text-2xl leading-tight font-bold text-balance sm:text-3xl lg:text-[2rem]"
+        >
+          I build interfaces that grow into{' '}
+          <span className="text-primary">real products.</span>
+        </h2>
+
+        <p style={ENTER(4)} className="text-muted-foreground max-w-[36rem] leading-relaxed text-pretty">
+          I turn product ideas into polished web experiences — connecting thoughtful UI with
+          application logic, APIs and data to build products that are fast, maintainable and
+          ready to evolve.
+        </p>
+
+        <div style={ENTER(5)} className="flex flex-col gap-2">
+          <p className="text-primary/80 text-xs font-semibold tracking-[0.15em] uppercase">
+            Engineering Focus
+          </p>
+          <p className="text-muted-foreground max-w-[36rem] leading-relaxed text-pretty">
+            Building across the product surface — UI systems, application state, API integration
+            and data-backed workflows.
           </p>
         </div>
 
-        <p className="text-muted-foreground max-w-md leading-relaxed text-pretty">
-          I turn product ideas into polished interfaces, scalable systems and web
-          experiences built to create real value.
-        </p>
-
-        <div className="flex flex-wrap items-center gap-3">
+        <div style={ENTER(6)} className="flex flex-wrap items-center gap-3">
           <a
-            href="#skills"
-            onClick={(e) => {
-              e.preventDefault()
-              document
-                .getElementById('skills')
-                ?.scrollIntoView({ behavior: 'smooth' })
-            }}
+            href="#projects"
+            onClick={scrollTo('projects')}
             className="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary/50 group inline-flex h-11 items-center gap-2 rounded-lg px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            View Skills
+            View Selected Work
             <ArrowRight
               className="size-4 transition-transform group-hover:translate-x-0.5"
               aria-hidden="true"
@@ -123,38 +142,81 @@ export function HeroSection() {
           </a>
           <a
             href="#contact"
-            onClick={(e) => {
-              e.preventDefault()
-              document
-                .getElementById('contact')
-                ?.scrollIntoView({ behavior: 'smooth' })
-            }}
+            onClick={scrollTo('contact')}
             className="border-border hover:border-primary/40 hover:bg-card focus-visible:ring-primary/50 inline-flex h-11 items-center gap-2 rounded-lg border px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <Mail className="size-4" aria-hidden="true" />
             Get In Touch
           </a>
+          <a
+            href={siteConfig.resumeUrl}
+            download
+            aria-label="Download resume"
+            className="border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 inline-flex h-11 items-center gap-2 rounded-lg border px-4 text-sm font-medium transition-colors"
+          >
+            <Download className="size-4" aria-hidden="true" />
+            Download Resume
+          </a>
         </div>
 
-        <p className="text-muted-foreground/70 text-xs leading-relaxed sm:text-sm">
-          2+ years experience · Frontend-focused full stack · Remote, India
-        </p>
+        <div
+          style={ENTER(8)}
+          className="divide-border/60 flex flex-wrap items-center divide-x text-sm"
+        >
+          <span className="flex flex-col gap-0.5 pr-4">
+            <span className="font-semibold">2+ Years</span>
+            <span className="text-muted-foreground text-xs">Professional experience</span>
+          </span>
+          <span className="flex flex-col gap-0.5 px-4">
+            <span className="font-semibold">Frontend First</span>
+            <span className="text-muted-foreground text-xs">Full-stack execution</span>
+          </span>
+          <span className="flex flex-col gap-0.5 pl-4">
+            <span className="font-semibold">Remote · India</span>
+            <span className="text-muted-foreground text-xs">Open to opportunities</span>
+          </span>
+        </div>
+
+        <Link
+          href="/projects/splitfin"
+          style={ENTER(9)}
+          className="group border-border/60 flex items-center justify-between gap-4 border-t pt-4 transition-colors"
+        >
+          <span className="flex items-center gap-3">
+            <span className="bg-success size-1.5 shrink-0 rounded-full" aria-hidden="true" />
+            <span className="flex flex-col gap-0.5">
+              <span className="text-muted-foreground text-xs font-semibold tracking-[0.1em] uppercase">
+                Currently Building
+              </span>
+              <span className="text-sm">
+                <span className="text-primary font-semibold">SplitFin</span>
+                <span className="text-muted-foreground">
+                  {' '}
+                  — smart finance tracking, bill scanning &amp; shared expense splitting
+                </span>
+              </span>
+            </span>
+          </span>
+          <ArrowRight
+            className="text-muted-foreground group-hover:text-primary size-4 shrink-0 transition-transform group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
+        </Link>
       </div>
 
-      {/* Right visual — atmospheric integration zone.
-          Stage width uses available viewport width without artificial caps.
-          The 16:9 artwork preserves its composition at all breakpoints. */}
-      <div className="relative w-full lg:w-[54%]">
-        <div className="relative mx-auto w-full max-w-[950px]">
-
-          {/* Scroll depth wrapper */}
+      {/* Right visual. Column widened to 54% and the artwork is allowed to
+          overflow past its column toward the page edge on large screens
+          (clipped safely by [overflow-x:clip] on the section) so it reads
+          as substantially larger than before, without shrinking the text
+          column. */}
+      <div style={ENTER(3)} className="relative w-full lg:w-[52%]">
+        <div className="relative mx-auto w-full max-w-[820px] lg:ml-auto lg:max-w-[950px]">
           <div
             style={{
               transform: `translate3d(0, ${scrollShift}px, 0)`,
               transition: 'transform 0.2s linear',
             }}
           >
-            {/* Pointer depth wrapper */}
             <div
               className="relative"
               onPointerMove={handlePointerMove}
@@ -164,32 +226,22 @@ export function HeroSection() {
                 transition: 'transform 0.3s ease-out',
               }}
             >
-              {/* Drift layer — CSS-animation-driven, kept on its own element
-                  so it doesn't fight the inline transforms above */}
               <div ref={artRef} className="relative animate-hero-float-mobile lg:animate-hero-float">
-                {/* Subtle scale breathing animation */}
-                <div className="animate-energy-core">
-                  {/* Hero artwork edge integration wrapper - dissolves empty peripheral background into black canvas */}
-                  <div className="hero-artwork-wrapper relative">
-                    <div className="hero-artwork-top-scrim" />
-                    <div className="hero-artwork-bottom-scrim" />
-                    <Image
-                      src="/images/hero-process.png"
-                      alt="Layered 3D process visual with rings representing Interface, Systems, Product and Impact"
-                      width={900}
-                      height={900}
-                      priority
-                      className="h-auto w-full object-contain"
-                    />
-                  </div>
+                <div className="hero-artwork-wrapper relative">
+                  <div className="hero-artwork-top-scrim" />
+                  <div className="hero-artwork-bottom-scrim" />
+                  <Image
+                    src="/images/hero-process.png"
+                    alt="Layered 3D process visual with rings representing Interface, Systems, Product and Impact"
+                    width={900}
+                    height={900}
+                    priority
+                    sizes="(max-width: 767px) 100vw, (max-width: 1199px) 90vw, 62vw"
+                    className="h-auto w-full object-contain"
+                  />
                 </div>
               </div>
 
-
-              {/* Motion Layer C: vertical energy transfer — a thin, mostly
-                  invisible beam that occasionally travels the central axis.
-                  Confined to the middle third so it never crosses the
-                  01/02/03/04 label zones near the edges. */}
               <div
                 aria-hidden="true"
                 className="animate-energy-transfer pointer-events-none absolute left-1/2 top-[30%] bottom-[30%] w-px -translate-x-1/2"
@@ -200,8 +252,6 @@ export function HeroSection() {
                 }}
               />
 
-              {/* Motion Layer E: light sweep — infrequent, low-opacity, and
-                  clipped to the artwork stage only */}
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -216,7 +266,6 @@ export function HeroSection() {
                 />
               </div>
 
-              {/* Layer G: local ambient particles */}
               <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ zIndex: 2 }}>
                 {HERO_FIELD_PARTICLES.map((p, i) => (
                   <span
