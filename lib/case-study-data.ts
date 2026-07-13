@@ -172,7 +172,7 @@ export const caseStudyData = {
       headline: 'One platform.',
       headlineHighlight: 'Every stay. Every role.',
       description: 'StayEase is evolving from a hotel booking experience into a unified stay and property platform — connecting travelers, property owners and platform operations through role-based workflows.',
-      liveUrl: 'https://stayease.vercel.app',
+      liveUrl: 'https://stayease-hotel-booking-platform.vercel.app/',
       githubUrl: 'https://github.com/bhanurx100',
       previewImage: '/images/stayease-preview.png',
       previewAlt: 'StayEase hotel booking platform showing discovery and booking interface',
