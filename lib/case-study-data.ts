@@ -6,7 +6,7 @@ export const caseStudyData = {
       headline: 'Track. Split. Settle.',
       headlineHighlight: 'All in one place.',
       description: 'SplitFin connects personal finance tracking and shared expenses in one workflow — so users can track spending, split costs, scan bills and settle balances without moving between separate apps.',
-      liveUrl: 'https://spend-wise-tawny.vercel.app/accounts',
+      liveUrl: 'https://spend-wise-tawny.vercel.app/',
       githubUrl: 'https://github.com/bhanurx100',
       previewImage: '/images/splitfin-preview.png',
       previewAlt: 'SplitFin dashboard showing finance tracking and shared expense management',
